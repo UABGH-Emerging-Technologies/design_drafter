@@ -1,0 +1,3 @@
+[submodule "llm_utils"]
+	path = llm_utils
+	url = https://github.com/UABPeriopAI/llm_utils.git
