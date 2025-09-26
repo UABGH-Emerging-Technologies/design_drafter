@@ -1,0 +1,25 @@
+@startuml
+package ui {
+  class GradioInterface
+  class PreviewPanel
+  class DownloadController
+}
+package service {
+  class ChatBotService
+  class DiagramBuilder
+  class NLPParser
+  class ThemeManager
+  class PlantUMLValidator
+  class AutoRepairStrategy
+}
+package infrastructure {
+  class PlantUmlClient
+  class HTTPPlantUmlClient
+  class LocalPlantUmlClient
+}
+package domain {
+  class DiagramRequest
+  class DiagramResponse
+  enum DiagramType
+}
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+actor "User" as user
+rectangle "UML Generator Application" as app
+rectangle "PlantUML Server\n(Managed by you)" as plantuml
+rectangle "OpenAI/LLM Chatbot" as llm
+rectangle "Auth Service" as auth
+rectangle "Monitoring/Logging Stack" as monitoring
+
+user --> app : Interacts via UI
+app --> plantuml : Render/validate diagrams
+app --> llm : NLP parsing / diagram codegen
+app --> auth : Authenticate user (optional)
+app --> monitoring : Metrics, errors, audits
+@enduml

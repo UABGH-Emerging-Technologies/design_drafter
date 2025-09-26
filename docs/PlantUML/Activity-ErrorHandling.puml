@@ -1,0 +1,18 @@
+@startuml
+start
+:User submits request;
+:Parse, generate PlantUML;
+if (PlantUML is valid?) then (yes)
+  :Render diagram;
+  :Success to user;
+else (no)
+  :Attempt auto-repair;
+  if (Repair works?) then (yes)
+    :Render diagram;
+    :Success to user;
+  else (fail)
+    :Show error to user;
+  endif
+endif
+stop
+@enduml

@@ -39,7 +39,11 @@
 		"kilocode.activeProvider": "openai",   // Or your custom provider
 		"kilocode.apiKey": "${env:KILO_API_KEY}",     // Use the env var above
 		"kilocode.endpoint": "${env:KILO_ENDPOINT}",  // Your backend endpoint
-		"kilocode.model": ""   // Optional, depends on your backend/provider
+		"kilocode.model": "",   // Optional, depends on your backend/provider
+		"plantuml.server": "http://138.26.48.104:8080",
+		"plantuml.render": "PlantUMLServer",
+    	"plantuml.urlFormat": "png",
+		
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
@@ -57,7 +61,7 @@
 	"env": {
     "MLFLOW_TRACKING_URI": "http://138.26.48.232:5000/",
     "MLFLOW_EXPERIMENT_NAME": "Design_Drafter"
-  	}	
+  	},	
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// where mlflow starts up

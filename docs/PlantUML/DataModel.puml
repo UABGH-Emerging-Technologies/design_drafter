@@ -1,0 +1,41 @@
+@startuml
+entity UserAccount {
+  * userId : UUID <<PK>>
+  --
+  username : string
+  email : string
+  passwordHash : string
+}
+
+entity Session {
+  * sessionId : UUID <<PK>>
+  --
+  userId : UUID <<FK>>
+  createdAt : datetime
+  expiresAt : datetime
+}
+
+entity DiagramHistory {
+  * diagramId : UUID <<PK>>
+  --
+  userId : UUID <<FK>>
+  type : DiagramType
+  description : text
+  timeCreated : datetime
+  lastStatus : string
+}
+
+entity RenderJob {
+  * jobId : UUID <<PK>>
+  --
+  diagramId : UUID <<FK>>
+  plantumlCode : text
+  status : string
+  resultUri : string
+  createdAt : datetime
+}
+
+UserAccount ||--o{ Session
+UserAccount ||--o{ DiagramHistory
+DiagramHistory ||--o{ RenderJob
+@enduml

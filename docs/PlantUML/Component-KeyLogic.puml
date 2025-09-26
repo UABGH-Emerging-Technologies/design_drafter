@@ -1,0 +1,30 @@
+@startuml
+package "UI Layer" {
+  [Gradio UI]
+  [PreviewPanel]
+  [DownloadController]
+}
+package "Service Layer" {
+  [ChatBotService]
+  [DiagramBuilder]
+  [NLPParser]
+  [ThemeManager]
+  [PlantUMLValidator]
+  [AutoRepairStrategy]
+}
+package "Infrastructure Layer" {
+  [PlantUmlClient]
+  [HTTPPlantUmlClient]
+  [LocalPlantUmlClient]
+}
+[Gradio UI] --> [ChatBotService]
+[ChatBotService] --> [DiagramBuilder]
+[DiagramBuilder] ..> [NLPParser]
+[DiagramBuilder] ..> [PlantUMLValidator]
+[DiagramBuilder] ..> [ThemeManager]
+[PlantUMLValidator] ..> [AutoRepairStrategy]
+[DiagramBuilder] ..> [PlantUmlClient]
+[HTTPPlantUmlClient] ..|> [PlantUmlClient]
+[LocalPlantUmlClient] ..|> [PlantUmlClient]
+[PreviewPanel] --> [DownloadController]
+@enduml

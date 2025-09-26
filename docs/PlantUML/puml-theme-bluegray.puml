@@ -1,0 +1,29 @@
+' puml-theme-bluegray.puml
+
+skinparam defaultTextAlignment center
+
+' Use font, color and shadow that make sense with the theme
+skinparam defaultFontName Bluegray
+skinparam defaultFontColor #465a64
+skinparam monochrome true
+skinparam shadowing true
+skinparam handwritten true
+skinparam arrowColor #465a64
+skinparam artifactBackgroundColor #96b7c9
+skinparam componentBorderColor #6b8696
+skinparam componentFontColor #465a64
+skinparam componentBackgroundColor #eef4f7
+skinparam classBorderColor #6b8696
+skinparam classBackgroundColor #eef4f7
+skinparam classFontColor #465a64
+skinparam noteBackgroundColor #eef4f7
+skinparam noteBorderColor #6b8696
+skinparam noteFontColor #465a64
+skinparam activityArrowColor #6b8696
+skinparam activityArrowFontColor #465a64
+skinparam activityBackgroundColor #96b7c9
+skinparam activityBorderColor #6b8696
+skinparam activityFontColor #465a64
+skinparam usecaseBackgroundColor #96b7c9
+skinparam usecaseBorderColor #6b8696
+skinparam usecaseFontColor #465a64

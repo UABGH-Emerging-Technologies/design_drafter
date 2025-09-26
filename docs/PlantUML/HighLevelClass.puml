@@ -1,0 +1,57 @@
+@startuml
+!theme bluegray
+
+package core {
+  
+  enum DiagramType {
+    USE_CASE
+    CLASS
+    ACTIVITY
+    DEPLOYMENT
+  }
+
+  class DiagramRequest {
+    +String description
+    +DiagramType type
+    +Map<String,Object> options
+  }
+
+  class DiagramResponse {
+    +String plantUmlCode
+    +byte[] imageBytes
+  }
+
+  interface PlantUMLClient {
+    +DiagramResponse render(String plantUmlText)
+  }
+
+  class HTTPPlantUMLClient {
+    +String endpointUrl
+    +DiagramResponse render(String plantUmlText)
+  }
+
+  class DiagramBuilder {
+    -PlantUMLClient client
+    +DiagramResponse generate(DiagramRequest req)
+    +String buildPlantUmlCode(DiagramRequest req)
+  }
+
+  class ChatBotService {
+    -DiagramBuilder builder
+    +DiagramResponse handle(DiagramRequest req)
+    +String nlpParse(String freeText)
+  }
+}
+
+package ui {
+  class GradioInterface {
+    +void launchApp()
+    +DiagramResponse onSubmit(DiagramRequest req)
+  }
+}
+
+DiagramBuilder ..> PlantUMLClient
+HTTPPlantUMLClient ..|> PlantUMLClient
+ChatBotService --> DiagramBuilder
+GradioInterface  --> ChatBotService
+@enduml

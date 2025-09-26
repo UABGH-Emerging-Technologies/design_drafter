@@ -1,0 +1,136 @@
+!include puml-theme-bluegray.puml      ' << optional global theme >>
+
+@startuml
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+
+'──────────────────────────────────────────────────────────────
+'  DOMAIN MODEL
+'──────────────────────────────────────────────────────────────
+package "domain" <<Domain>> {
+
+  enum DiagramType {
+    USE_CASE
+    CLASS
+    ACTIVITY
+    DEPLOYMENT
+    STATE_MACHINE
+  }
+
+  class DiagramRequest {
+      +String description
+      +DiagramType type
+      +Map<String,Object> options
+      +String theme
+  }
+
+  class DiagramResponse {
+      +String plantUmlCode
+      +byte[] imageBytes
+      +boolean repaired
+      +List<String> messages
+  }
+}
+
+'──────────────────────────────────────────────────────────────
+'  INFRASTRUCTURE (PlantUML access)
+'──────────────────────────────────────────────────────────────
+package "infrastructure" <<Framework>> {
+
+  interface PlantUmlClient {
+      +DiagramResponse render(String puml)
+  }
+
+  class HTTPPlantUmlClient {
+      -String endpointUrl
+      +DiagramResponse render(String puml)
+  }
+
+  class LocalPlantUmlClient {
+      -String jarPath
+      +DiagramResponse render(String puml)
+  }
+
+  HTTPPlantUmlClient  ..|>  PlantUmlClient
+  LocalPlantUmlClient ..|>  PlantUmlClient
+}
+
+'──────────────────────────────────────────────────────────────
+'  SERVICE LAYER
+'──────────────────────────────────────────────────────────────
+package "service" <<Service>> {
+
+  class NLPParser {
+      +ParsedModel parse(String freeText, DiagramType type)
+  }
+
+  class ThemeManager {
+      +String getThemeCode(String themeName="bluegray")
+  }
+
+  class AutoRepairStrategy {
+      +String repair(String invalidPuml)
+  }
+
+  class PlantUmlValidator {
+      +boolean isValid(String puml)
+      +String  tryRepair(String puml)
+      -AutoRepairStrategy strategy
+  }
+
+  class DiagramBuilder {
+      -PlantUmlClient    client
+      -PlantUmlValidator validator
+      -ThemeManager      themeMgr
+      +String buildPlantUmlCode(ParsedModel, DiagramType)
+      +DiagramResponse generate(DiagramRequest)
+  }
+
+  class ChatBotService {
+      -NLPParser      parser
+      -DiagramBuilder builder
+      +DiagramResponse handle(DiagramRequest)
+  }
+
+  ' dependencies inside the service layer
+  PlantUmlValidator --> AutoRepairStrategy
+  DiagramBuilder    ..> PlantUmlClient
+  DiagramBuilder    ..> PlantUmlValidator
+  DiagramBuilder    ..> ThemeManager
+  ChatBotService    ..> NLPParser
+  ChatBotService    ..> DiagramBuilder
+}
+
+'──────────────────────────────────────────────────────────────
+'  UI LAYER (Gradio)
+'──────────────────────────────────────────────────────────────
+package "ui" <<UI>> {
+
+  class GradioInterface {
+      +void launchApp()
+      +DiagramResponse onSubmit(DiagramRequest)
+  }
+
+  class PreviewPanel {
+      +void display(DiagramResponse)
+      +void showError(String msg)
+  }
+
+  class DownloadController {
+      +void downloadImage(DiagramResponse)
+  }
+
+  GradioInterface --> ChatBotService             : uses
+  GradioInterface --> PreviewPanel               : updates
+  PreviewPanel   --> DownloadController          : delegates
+}
+
+'──────────────────────────────────────────────────────────────
+'  CROSS-PACKAGE RELATIONS
+'──────────────────────────────────────────────────────────────
+GradioInterface --> domain.DiagramRequest
+ChatBotService  --> domain.DiagramResponse
+DiagramBuilder  --> domain.DiagramRequest
+DiagramBuilder  --> domain.DiagramResponse
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+!theme bluegray
+start
+
+:User enters free-text description;
+:User selects diagram type;
+:Gradio UI assembles DiagramRequest;
+:HTTP POST → ChatBot Service;
+
+partition "ChatBot Service" {
+  :Parse the natural language;
+  :Build PlantUML source code;
+}
+
+:HTTP POST → PlantUML Server;
+:Receive rendered diagram image (PNG/SVG);
+
+:Gradio UI displays diagram;
+if (User clicks “Download”?) then (yes)
+  :Send image file to browser;
+endif
+
+stop
+@enduml

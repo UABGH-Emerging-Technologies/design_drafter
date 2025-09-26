@@ -1,0 +1,7 @@
+@startuml
+[*] --> LoggedOut
+LoggedOut --> Authenticated : login success
+Authenticated --> ElevatedPrivileges : admin grants
+ElevatedPrivileges --> Authenticated : demote
+Authenticated --> LoggedOut : logout/timeout
+@enduml

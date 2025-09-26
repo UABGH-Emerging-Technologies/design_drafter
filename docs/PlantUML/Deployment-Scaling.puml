@@ -1,0 +1,22 @@
+@startuml
+node "User Browser" as Browser
+node "Load Balancer" as LB
+node "App Server Pod\n(autoscaling xN)" as AppServer
+node "PlantUML Server\n(Horizontally scalable)" as UmlServer
+node "DB Cluster" as DB
+node "Monitoring/Logging" as Mon
+node "Auth Service" as Auth
+
+Browser --> LB : HTTPS
+LB --> AppServer : HTTPS
+AppServer --> UmlServer : HTTP(S) (render jobs)
+AppServer --> DB : R/W diagrams, users
+AppServer --> Auth : Auth queries
+AppServer --> Mon : logs, metrics
+
+UmlServer --> Mon : health/logs
+
+' annotate scaling
+note right of AppServer: "Min 2, auto-scale to 10\nCPU/RAM monitored"
+note right of UmlServer: "Clustered,\nshared storage,\nauto failover"
+@enduml

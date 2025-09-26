@@ -1,0 +1,10 @@
+@startuml
+actor User
+participant "Gradio UI" as UI
+participant "DownloadController" as DL
+
+User -> UI: Click "Download"
+UI -> DL: download request
+DL -> UI: prepare image file
+UI -> User: prompt browser download
+@enduml

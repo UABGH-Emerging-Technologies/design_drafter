@@ -1,0 +1,20 @@
+@startuml
+actor User
+rectangle "UML Generator App" {
+  usecase "Enter description text"      as UC1
+  usecase "Select diagram type"         as UC2
+  usecase "Send request to chatbot"     as UC3
+  usecase "Validate / Auto-repair\nPlantUML syntax" as UC4
+  usecase "Preview generated diagram"   as UC5
+  usecase "Download diagram image"      as UC6
+}
+
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC5
+User --> UC6
+
+UC3 --> UC4 : «include»
+UC4 --> UC5 : «include»
+@enduml

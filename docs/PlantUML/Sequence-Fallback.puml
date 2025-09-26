@@ -1,0 +1,30 @@
+@startuml
+actor User
+participant "Gradio UI" as UI
+participant "ChatBotService" as ChatBot
+participant "DiagramBuilder" as Builder
+participant "PlantUML Server" as Server
+participant "Local PlantUML JAR" as LocalJar
+
+== User initiates diagram creation ==
+User -> UI: Enter description & select type
+UI -> ChatBot: send DiagramRequest
+ChatBot -> Builder: buildPlantUmlCode
+Builder -> Builder: validate syntax
+note right of Builder: Assume validation passes
+
+== Attempt rendering via server ==
+Builder -> Server: POST diagram text
+alt Server responds successfully
+    Server --> Builder: PNG/SVG image
+    Builder --> ChatBot: DiagramResponse (image)
+    ChatBot --> UI: show preview
+else Server fails (timeout/error)
+    note right of Builder: Fallback to local JAR
+    Builder -> LocalJar: run JAR with diagram text
+    LocalJar --> Builder: PNG/SVG image
+    Builder --> ChatBot: DiagramResponse (image)
+    ChatBot --> UI: show fallback preview
+end
+
+@enduml

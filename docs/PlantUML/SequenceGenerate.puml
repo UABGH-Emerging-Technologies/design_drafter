@@ -1,0 +1,23 @@
+@startuml
+actor User
+participant "Gradio UI" as UI
+participant "ChatBotService" as ChatBot
+participant "DiagramBuilder" as Builder
+participant "PlantUMLValidator" as Validator
+participant "PlantUmlClient" as Client
+participant "PlantUML Server" as Server
+
+User -> UI: Enter description, select type
+User -> UI: Click "Generate"
+UI -> ChatBot: send DiagramRequest
+ChatBot -> Builder: validate & build code
+Builder -> Validator: validate PlantUML code
+Validator --> Builder: valid
+Builder -> Client: render PlantUML
+Client -> Server: POST PlantUML text
+Server --> Client: Diagram image (PNG/SVG)
+Client --> Builder: image
+Builder --> ChatBot: DiagramResponse
+ChatBot --> UI: DiagramResponse (image)
+UI -> User: Show preview
+@enduml

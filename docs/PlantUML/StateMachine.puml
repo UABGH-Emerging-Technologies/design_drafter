@@ -1,0 +1,42 @@
+@startuml
+[*] --> Idle
+
+state Idle {
+  [*] --> WaitingForInput
+}
+
+Idle --> ReceivingInput : user starts interaction
+
+state ReceivingInput {
+  [*] --> WaitingForDescriptionß
+  WaitingForDescription --> WaitingForDiagramType : description entered
+  WaitingForDiagramType --> ReadyToSubmit : type selected
+  ReadyToSubmit --> WaitingForDescription : user updates description
+  ReadyToSubmit --> WaitingForDiagramType : user changes type
+}
+
+ReceivingInput --> SendingRequest : user clicks submit
+
+SendingRequest : show loading/spinner
+SendingRequest --> ProcessingNLP : request sent to chatbot
+ProcessingNLP : parse user description, generate PlantUML code
+ProcessingNLP --> GeneratingDiagram : send PlantUML code to renderer
+
+GeneratingDiagram : calling PlantUML server
+GeneratingDiagram --> DisplayResult : diagram image received
+GeneratingDiagram --> ErrorState : PlantUML server error
+
+DisplayResult : show diagram to user
+DisplayResult --> Idle : user starts over
+DisplayResult --> Downloading : user clicks download
+
+Downloading : prepare/download image
+Downloading --> Idle : download complete
+
+SendingRequest --> ErrorState : network error
+ProcessingNLP --> ErrorState : parsing error
+
+ErrorState : show error message
+ErrorState --> Idle : user tries again / resets
+
+@enduml

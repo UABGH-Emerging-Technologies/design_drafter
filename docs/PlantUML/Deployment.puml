@@ -1,0 +1,22 @@
+@startuml
+!theme bluegray
+node "User Browser" as browser
+
+node "Gradio App Server" as appServer {
+  component "Gradio UI"           as UI
+  component "ChatBot Service"     as Bot
+  component "Diagram Generator"   as Generator
+}
+
+node "PlantUML Server" as puml {
+  artifact "PlantUML REST API"    as PUMLAPI
+}
+
+browser --> UI          : HTTP/JS
+UI      --> Bot         : /generate POST (DiagramRequest)
+Bot     --> Generator   : buildPlantUml(req)
+Generator --> PUMLAPI   : POST PlantUML text
+PUMLAPI --> Generator   : PNG/SVG image
+Generator --> Bot       : DiagramResponse
+Bot     --> UI          : HTTP response (image)
+@enduml

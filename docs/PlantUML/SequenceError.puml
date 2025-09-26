@@ -1,0 +1,27 @@
+@startuml
+actor User
+participant "Gradio UI" as UI
+participant "ChatBotService" as ChatBot
+participant "DiagramBuilder" as Builder
+participant "PlantUMLValidator" as Validator
+participant "AutoRepairStrategy" as Repair
+participant "PlantUmlClient" as Client
+participant "PlantUML Server" as Server
+
+User -> UI: Input & click Generate
+UI -> ChatBot: send DiagramRequest
+ChatBot -> Builder: build PlantUML text
+Builder -> Validator: validate PlantUML code
+Validator --> Builder: invalid
+Builder -> Repair: attempt auto-repair
+Repair --> Builder: repaired code
+Builder -> Validator: validate again
+Validator --> Builder: valid
+Builder -> Client: render code
+Client -> Server: POST code
+Server --> Client: error (optional, if repair fails)
+Client --> Builder: error message or image
+Builder --> ChatBot: error or DiagramResponse
+ChatBot --> UI: show error/preview
+UI -> User: inform user or show result
+@enduml
