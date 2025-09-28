@@ -8,9 +8,10 @@
 - Keep functions small, pure, and idempotent when possible.
 - Organize code:
   - `Design_Drafter/` main package & sub-packages
+  - `Design_Drafter/config/` configuration files (i.e. all hard coded variables)
   - `tests/` pytest suite
   - `docs/` MkDocs material
-  - `docs/uml/` PlantUML sources
+  - `docs/PlantUML/` PlantUML sources
 - Protect PHI/PII: no secrets or patient data in code or logs.
 
 ## CI Expectations

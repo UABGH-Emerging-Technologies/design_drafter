@@ -10,6 +10,7 @@ st_pages
 langchain
 langchain-prompty
 langchain-openai
+langchain-community
 openai
 tiktoken
 pyodbc
@@ -28,3 +29,4 @@ python-multipart
 fastapi
 ./llm_utils
 pytest
+gradio

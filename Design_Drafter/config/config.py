@@ -19,10 +19,18 @@ class Design_DrafterConfig:
     INTERMEDIATE_DIR = Path(DATA_DIR, "intermediate")
     RESULTS_DIR = Path(DATA_DIR, "results")
 
-    #Assets
-    #Add assets here as needed.
-    HEADER_MARKDOWN="""# EXAMPLE Header Markdown \r todo - update this """
+    # Assets
+    # Add assets here as needed.
+    HEADER_MARKDOWN = """# EXAMPLE Header Markdown \r todo - update this """
     EXAMPLE_OUTPUT = Path(INTERMEDIATE_DIR, "Example_Output.csv")
+
+    # LLM Configuration
+    # For security, prefer to set LLM_API_KEY as an environment variable.
+    import os
+    LLM_API_KEY = os.environ.get("OPENAI_API_KEY", "sk-...")  # Replace with your default or leave blank
+    LLM_MODEL = "gpt-3.5-turbo"
+    LLM_API_BASE = os.environ.get("OPENAI_API_BASE", "https://api.openai.com/v1")
+    # If using Azure, set LLM_API_BASE to your Azure endpoint and adjust model name as needed.
 
     # MLFlow model registry
 

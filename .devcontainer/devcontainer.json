@@ -18,10 +18,11 @@
 
 	// change for the specific project
 	"mounts": [
+		"source=/mnt/p/Secrets,target=/workspaces/Design_Drafter/secrets,readonly,type=bind"  // Mount secrets
 	  ],
 
 	//mlflow port
-	"forwardingPorts":[5000]
+	"forwardingPorts":[5000],
 	
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
