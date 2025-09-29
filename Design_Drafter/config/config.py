@@ -60,7 +60,7 @@ class Design_DrafterConfig:
         "OpenAI API key not found. Please ensure it is available via /run/secrets, /workspaces/*/secrets, or as an environment variable."
     )
     DIAGRAM_SUCCESS_MSG = "Diagram generated successfully using LLM."
-    PLANTUML_SERVER_URL_TEMPLATE = "http://138.26.48.104:8080/uml/png/{encoded}"
+    PLANTUML_SERVER_URL_TEMPLATE = "http://138.26.48.104:8080/png/{encoded}"
 
     # LLM Configuration
     # For security, prefer to set LLM_API_KEY as an environment variable.
