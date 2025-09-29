@@ -15,90 +15,78 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent / "llm_utils"))
 sys.path.append(str(Path(__file__).parent.parent))
 
-# Import LLM utilities (reuse before you write)
-from aiweb_common.generate.ChatServicer import ChatServicer
-from aiweb_common.generate.PromptAssembler import PromptAssembler
-from aiweb_common.WorkflowHandler import manage_sensitive
-
 # Import config and LangChain LLM
 from Design_Drafter.config.config import Design_DrafterConfig
 from langchain_openai import ChatOpenAI
 
-# Placeholder for service layer classes (to be implemented)
-# from Design_Drafter.service.nlp_parser import NLPParser
-# from Design_Drafter.service.diagram_builder import DiagramBuilder
-# from Design_Drafter.service.plantuml_validator import PlantUMLValidator
+# Import UMLDraftHandler for diagram generation
+from Design_Drafter.uml_draft_handler import UMLDraftHandler
 
-DIAGRAM_TYPES = [
-    "Use Case",
-    "Class",
-    "Activity",
-    "Component",
-    "Deployment",
-    "State Machine",
-    "Timing",
-    "Sequence"
-]
+# Use config for diagram types
 
-def generate_diagram(description: str, diagram_type: str) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+def generate_diagram(description: str, diagram_type: str, theme: Optional[str] = None) -> Tuple[Optional[str], Optional[str], Optional[str]]:
     """
     Main handler for diagram generation.
     Returns: (PlantUML code, image URL, status message)
     """
-    # Step 1: NLP Parsing (LLM)
-    prompt = PromptAssembler.assemble_prompt(
-        system_prompt=f"Convert the following description into a PlantUML {diagram_type} diagram.",
-        user_prompt=description
-    )
-
     # Securely retrieve the API key using manage_sensitive
+    
     try:
-        api_key = manage_sensitive("OPENAI_API_KEY")
+        api_key = Design_DrafterConfig.LLM_API_KEY
     except KeyError:
         return (
             "",
             None,
-            "OpenAI API key not found. Please ensure it is available via /run/secrets, /workspaces/*/secrets, or as an environment variable."
+            Design_DrafterConfig.API_KEY_MISSING_MSG
         )
 
-    # Instantiate the LLM interface
+    # Instantiate the LLM interface (must provide .invoke())
     llm = ChatOpenAI(
         openai_api_key=api_key,
         model=Design_DrafterConfig.LLM_MODEL,
         openai_api_base=Design_DrafterConfig.LLM_API_BASE,
         temperature=0.2,
-        max_tokens=512,
+        max_tokens=5000,
     )
 
-    # Use ChatServicer to get PlantUML code from LLM
-    chat_servicer = ChatServicer(language_model_interface=llm, prompt=prompt)
+    # Instantiate UMLDraftHandler
+    handler = UMLDraftHandler()
+
+    # Generate diagram using handler
     try:
-        # The expected input for generate_langchain_response is a list of messages
-        response, _ = chat_servicer.generate_langchain_response(
-            [{"role": "user", "content": description}]
+        plantuml_code = handler.process(
+            diagram_type=diagram_type,
+            description=description,
+            theme=theme,
+            llm_interface=llm
         )
-        plantuml_code = response.strip()
-        status_msg = "Diagram generated successfully using LLM."
+        print("PLANTUML - ", plantuml_code)
+        status_msg = Design_DrafterConfig.DIAGRAM_SUCCESS_MSG
     except Exception as e:
-        plantuml_code = f"@startuml\n' {diagram_type} diagram\n' {description}\n@enduml"
+        plantuml_code = Design_DrafterConfig.FALLBACK_PLANTUML_TEMPLATE.format(
+            diagram_type=diagram_type, description=description
+        )
         status_msg = f"LLM error: {e}. Showing fallback stub."
 
-    # Step 3: Render PlantUML (use public PlantUML server for demo)
+    # Render PlantUML (use public PlantUML server for demo)
     import urllib.parse
     encoded = urllib.parse.quote(plantuml_code)
-    image_url = f"http://138.26.48.104:8080//plantuml/png/{encoded}"
+    image_url = Design_DrafterConfig.PLANTUML_SERVER_URL_TEMPLATE.format(encoded=encoded)
 
-    # Step 4: Return results
+    # Return results
     return plantuml_code, image_url, status_msg
 
-import os
 
 with gr.Blocks(title="UML Diagram Generator") as demo:
     gr.Markdown("# UML Diagram Generator")
 
     with gr.Row():
         description = gr.Textbox(label="Diagram Description", lines=6, placeholder="Describe your UML diagram...")
-        diagram_type = gr.Dropdown(label="Diagram Type", choices=DIAGRAM_TYPES, value=DIAGRAM_TYPES[0])
+        diagram_type = gr.Dropdown(
+            label="Diagram Type",
+            choices=Design_DrafterConfig.DIAGRAM_TYPES,
+            value=Design_DrafterConfig.DIAGRAM_TYPES[0]
+        )
     with gr.Row():
         gr.Markdown("**Click to send your description to the LLM and generate a UML diagram.**")
         generate_btn = gr.Button("Send to LLM")
