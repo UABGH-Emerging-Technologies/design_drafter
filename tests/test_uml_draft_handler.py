@@ -36,8 +36,22 @@ def test_process_invokes_llm_and_returns_diagram(monkeypatch):
 def test_process_raises_on_missing_llm(monkeypatch):
     handler = UMLDraftHandler(config=Design_DrafterConfig())
     monkeypatch.setattr(handler, "load_prompty", lambda: DummyPrompt("template"))
-    with pytest.raises(ValueError):
-        handler.process("class", "Foo system", "bluegray", llm_interface=None)
+    from Design_Drafter.uml_draft_handler import UMLRetryManager
+    with pytest.raises(RuntimeError):
+        handler.process("class", "Foo system", "bluegray", llm_interface=None, retry_manager=UMLRetryManager(max_retries=1))
+
+def test_process_retries_and_surfaces_error(monkeypatch):
+    handler = UMLDraftHandler(config=Design_DrafterConfig())
+    monkeypatch.setattr(handler, "load_prompty", lambda: DummyPrompt("template"))
+    class AlwaysFailLLM:
+        def invoke(self, prompt):
+            raise Exception("LLM always fails")
+    from Design_Drafter.uml_draft_handler import UMLRetryManager
+    retry_manager = UMLRetryManager(max_retries=3)
+    with pytest.raises(RuntimeError) as excinfo:
+        handler.process("class", "Foo system", "bluegray", llm_interface=AlwaysFailLLM(), retry_manager=retry_manager)
+    assert "UML diagram generation failed after 3 attempts" in str(excinfo.value)
+    assert "LLM always fails" in str(excinfo.value)
 
 def test_validate_prompt_template_missing_required(monkeypatch):
     handler = UMLDraftHandler(config=Design_DrafterConfig())

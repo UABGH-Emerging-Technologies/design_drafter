@@ -138,7 +138,20 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
         chat_input = gr.Textbox(label="UML Chat Input", placeholder="Type your UML question or change...", lines=2)
         submit_chat_btn = gr.Button("Send to UML Chat")
     with gr.Row():
-        chatbox = gr.Chatbot(label="UML Chat History", height=300, type="messages")
+        # Make chatbox scrollable and persistent for full history
+        chatbox = gr.Chatbot(
+            label="UML Chat History",
+            height=400,
+            type="messages",
+            show_copy_button=True,
+            show_label=True,
+            layout="panel",  # vertical panel layout for clarity
+            avatar_images=None,  # can be customized per role if desired
+            container=True,  # enables scrollable container
+            min_width=400,
+            elem_id="uml-chatbox",
+            elem_classes=["scrollable-chatbox"]
+        )
 
     # Remove initial text input and diagram type controls
     # Only use the Chat interface for all diagram generation and revision
@@ -151,13 +164,45 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
         rerender_btn = gr.Button("Re-render from PlantUML code")
 
     # State for chat history and context
-    chat_state = gr.State([])  # List of (user, message) tuples
+    # State for chat history as list of dicts with explicit role
+    chat_state = gr.State([])  # List of dicts: {"role": "user"/"assistant"/"system"/"error", "content": ...}
 
     # State for revised UML code (for chat-based revision workflow)
     revised_uml_code = gr.State("")
 
 
     from Design_Drafter.utils.plantuml_extractor import extract_last_plantuml_block
+
+    def format_chat_history(chat_history):
+        """
+        Formats chat history for display, ensuring all roles are shown and error/system messages are styled.
+        Args:
+            chat_history (list[dict]): List of chat messages with 'role' and 'content'.
+        Returns:
+            list[dict]: Formatted chat history for Gradio display.
+        """
+        formatted = []
+        for msg in chat_history:
+            if msg["role"] == "error":
+                formatted.append({"role": "error", "content": f"❌ {msg['content']}"})
+            elif msg["role"] == "system":
+                formatted.append({"role": "system", "content": f"ℹ️ {msg['content']}"})
+            else:
+                formatted.append({"role": msg["role"], "content": msg["content"]})
+        return formatted
+
+    # Custom CSS for scrollable chatbox
+    gr.HTML(
+        """
+        <style>
+        #uml-chatbox {
+            overflow-y: auto !important;
+            max-height: 400px !important;
+            min-width: 400px;
+        }
+        </style>
+        """
+    )
 
     def on_chat_submit(user_input, chat_history, plantuml_code_text, diagram_type):
         """
@@ -168,100 +213,103 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
 
         The selected diagram_type is injected into the prompt for the LLM backend.
         """
-        try:
-            logging.basicConfig(level=logging.DEBUG)
-            if not chat_history:
-                chat_history = []
-            # Escape curly braces in user input and PlantUML code to avoid template variable mismatch
-            def escape_curly(text: str) -> str:
-                return text.replace("{", "{{").replace("}", "}}")
-            safe_user_input = escape_curly(user_input)
-            safe_plantuml_code = escape_curly(plantuml_code_text.strip())
-            # Add user suggestion
-            chat_history = chat_history + [("user", user_input)]
-            # Compose single system message, injecting diagram_type
-            system_msg = (
-                f"Diagram type: {diagram_type}\n"
-                f"User request: {safe_user_input}\n"
-                f"Current PlantUML code:\n"
-                "```plantuml\n"
-                f"{safe_plantuml_code}\n"
-                "```\n"
-                "Please return only the updated PlantUML code."
-            )
-            chat_history = chat_history + [("system", system_msg)]
+        logging.basicConfig(level=logging.DEBUG)
+        if not chat_history:
+            chat_history = []
+        # Escape curly braces in user input and PlantUML code to avoid template variable mismatch
+        def escape_curly(text: str) -> str:
+            return text.replace("{", "{{").replace("}", "}}")
+        safe_user_input = escape_curly(user_input)
+        safe_plantuml_code = escape_curly(plantuml_code_text.strip())
+        # Add user suggestion
+        chat_history = chat_history + [{"role": "user", "content": user_input}]
+        # Compose single system message, injecting diagram_type
+        system_msg = (
+            f"Diagram type: {diagram_type}\n"
+            f"User request: {safe_user_input}\n"
+            f"Current PlantUML code:\n"
+            "```plantuml\n"
+            f"{safe_plantuml_code}\n"
+            "```\n"
+            "Please return only the updated PlantUML code."
+        )
+        chat_history = chat_history + [{"role": "system", "content": system_msg}]
 
-            # Convert chat_history to list of dicts compatible with both ChatRequest and LangChain
-            messages = []
-            for role, content in chat_history:
-                # Pydantic ChatRequest expects 'human' and 'ai' for role
-                if role == "user":
-                    messages.append({"role": "human", "content": content})
-                else:
-                    messages.append({"role": "ai", "content": content})
+        # Prepare messages for LLM backend (role mapping for ChatResponseHandler)
+        messages = []
+        for msg in chat_history:
+            if msg["role"] == "user":
+                messages.append({"role": "human", "content": msg["content"]})
+            elif msg["role"] == "assistant":
+                messages.append({"role": "ai", "content": msg["content"]})
+            elif msg["role"] == "system":
+                messages.append({"role": "system", "content": msg["content"]})
+            elif msg["role"] == "error":
+                messages.append({"role": "error", "content": msg["content"]})
 
-            # Call the LLM backend
-            handler = UMLDraftHandler()
-            handler._init_openai(
-                openai_compatible_endpoint=Design_DrafterConfig.LLM_API_BASE,
-                openai_compatible_key=Design_DrafterConfig.LLM_API_KEY,
-                openai_compatible_model=Design_DrafterConfig.LLM_MODEL,
-                name="Design_Drafter"
-            )
-            # LOG the prompt value before passing to ChatResponseHandler
-
-            prompt_value = system_msg
-            logging.debug(f"on_chat_submit: passing prompt={prompt_value} to ChatResponseHandler")
-            chat_response_handler = ChatResponseHandler(handler.llm_interface, prompt=prompt_value)
-            # Only pass the list of dicts to LangChain, not to ChatRequest (which expects Message objects)
-            # So, skip ChatRequest and pass messages directly to the handler
-            logging.debug(f"Passing messages to chat_response_handler: {messages}")
-            chat_response = chat_response_handler.generate_response(messages)
-
-            # Extract updated PlantUML code from response
-            raw_response = chat_response.response.content
+        # Call the LLM backend with retry logic
+        handler = UMLDraftHandler()
+        handler._init_openai(
+            openai_compatible_endpoint=Design_DrafterConfig.LLM_API_BASE,
+            openai_compatible_key=Design_DrafterConfig.LLM_API_KEY,
+            openai_compatible_model=Design_DrafterConfig.LLM_MODEL,
+            name="Design_Drafter"
+        )
+        from Design_Drafter.uml_draft_handler import UMLRetryManager
+        retry_manager = UMLRetryManager(max_retries=3)
+        raw_response = None
+        error_feedback = ""
+        pil_image = None  # Always defined before loop
+        for attempt in range(1, retry_manager.max_retries + 1):
             try:
+                chat_response_handler = ChatResponseHandler(handler.llm_interface, prompt=system_msg)
+                chat_response = chat_response_handler.generate_response(messages)
+                raw_response = chat_response.response.content
                 extracted_plantuml = extract_last_plantuml_block(raw_response)
                 plantuml_code_text = extracted_plantuml
-                # Trigger diagram re-render
                 pil_image, status_msg = on_rerender(plantuml_code_text)
-                error_feedback = ""
+                chat_history = chat_history + [{"role": "assistant", "content": raw_response}]
+                break
             except Exception as e:
-                # Extraction failed, keep previous code, show error
-                pil_image, status_msg = None, f"Error extracting PlantUML: {e}"
-                error_feedback = f"⚠️ {status_msg}"
-                # Optionally, keep the raw response in chat for debugging
+                retry_manager.record_error(e)
+                error_msg = f"Attempt {attempt}: UML rendering failed: {e}"
+                chat_history = chat_history + [{"role": "error", "content": error_msg}]
+                pil_image = None
+                status_msg = error_msg
+                error_feedback = f"⚠️ {error_msg}"
+                if not retry_manager.should_retry():
+                    error_feedback += f"\nMax retries reached. Error context:\n{retry_manager.error_context()}"
+                    break
+            except Exception as e:
+                retry_manager.record_error(e)
+                error_msg = f"Attempt {attempt}: UML rendering failed: {e}"
+                chat_history = chat_history + [{"role": "error", "content": error_msg}]
+                pil_image, status_msg = None, error_msg
+                error_feedback = f"⚠️ {error_msg}"
+                if not retry_manager.should_retry():
+                    error_feedback += f"\nMax retries reached. Error context:\n{retry_manager.error_context()}"
+                    break
 
-            # Append the LLM's PlantUML response as an "assistant" message so it displays in the chatbox
-            chat_history = chat_history + [("assistant", raw_response)]
+        # For Gradio Chatbot, display all messages (user, assistant, system, error)
+        gradio_chat_history = []
+        for msg in chat_history:
+            # Format error/system messages for UI clarity
+            if msg["role"] == "error":
+                gradio_chat_history.append({
+                    "role": "error",
+                    "content": f"❌ {msg['content']}"
+                })
+            elif msg["role"] == "system":
+                gradio_chat_history.append({
+                    "role": "system",
+                    "content": f"ℹ️ {msg['content']}"
+                })
+            else:
+                gradio_chat_history.append({"role": msg["role"], "content": msg["content"]})
 
-            logging.debug(f"on_chat_submit returning: chat_history={chat_history}, chat_input=''")
-
-            # For Gradio Chatbot, convert chat_history to OpenAI-style messages for display
-            gradio_chat_history = []
-            for role, content in chat_history:
-                if role == "user":
-                    gradio_chat_history.append({"role": "user", "content": content})
-                else:
-                    gradio_chat_history.append({"role": "assistant", "content": content})
-
-            # Update UI: code window, diagram preview, status
-            # Return chat history, clear chat input, update code window, image, and status
-            # (Gradio expects outputs in order: chatbox, chat_input, plantuml_code, image, status)
-            return gradio_chat_history, "", plantuml_code_text, pil_image, error_feedback
-        except Exception as top_err:
-            # Top-level error: keep previous code/diagram, show error
-            logging.error(f"on_chat_submit: Unhandled error: {top_err}", exc_info=True)
-            error_feedback = f"⚠️ Chat error: {top_err}"
-            # Return previous state for code/diagram, and error message
-            gradio_chat_history = []
-            if chat_history:
-                for role, content in chat_history:
-                    if role == "user":
-                        gradio_chat_history.append({"role": "user", "content": content})
-                    else:
-                        gradio_chat_history.append({"role": "assistant", "content": content})
-            return gradio_chat_history, "", plantuml_code_text, None, error_feedback
+        # Return chat history, clear chat input, update code window, image, and status
+        # Ensure pil_image is always defined
+        return gradio_chat_history, "", plantuml_code_text, pil_image, error_feedback
 
     # --- Existing handlers ---
     def on_generate(desc, dtype):

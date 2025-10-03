@@ -7,6 +7,33 @@ Refactored to inherit WorkflowHandler and provide methods for:
 
 No UI/Gradio code.
 """
+class UMLRetryManager:
+    """
+    Tracks retry count and error context for UML rendering attempts.
+
+    Attributes:
+        max_retries (int): Maximum number of retries allowed.
+        attempt (int): Current attempt number.
+        errors (list[str]): List of error messages from each failed attempt.
+    """
+
+    def __init__(self, max_retries: int = 3) -> None:
+        self.max_retries = max_retries
+        self.attempt = 0
+        self.errors: list[str] = []
+
+    def record_error(self, error: Exception) -> None:
+        self.attempt += 1
+        self.errors.append(str(error))
+
+    def should_retry(self) -> bool:
+        return self.attempt < self.max_retries
+
+    def last_error(self) -> str:
+        return self.errors[-1] if self.errors else ""
+
+    def error_context(self) -> str:
+        return "\n".join(f"Attempt {i+1}: {msg}" for i, msg in enumerate(self.errors))
 
 from pathlib import Path
 from typing import Optional, Any
@@ -161,52 +188,57 @@ class UMLDraftHandler(WorkflowHandler):
         description: str,
         theme: Optional[str] = None,
         llm_interface=None,
+        retry_manager: Optional["UMLRetryManager"] = None,
     ) -> str:
         """
-        Generates a UML diagram using the LLM and prompty template.
+        Generates a UML diagram using the LLM and prompty template, with error handling and retry logic.
 
         Args:
             diagram_type (str): Type of UML diagram to generate.
             description (str): Description of the system/process to diagram.
             theme (Optional[str]): PlantUML theme/style.
             llm_interface: Optional LLM interface for invocation (must have .invoke()).
+            retry_manager (Optional[UMLRetryManager]): Helper for tracking retries and error context.
 
         Returns:
             str: PlantUML diagram code.
 
         Raises:
-            Exception: On LLM invocation or prompt errors.
+            RuntimeError: If all retries fail, with error context.
         """
-        try:
-            prompt = self.construct_prompt(diagram_type, description, theme)
-            # If no llm_interface provided, raise error (could be injected for testability)
-            if llm_interface is None:
-                raise ValueError("LLM interface must be provided for diagram generation.")
-            # Extract messages if present (Langchain ChatPromptValue)
-            if hasattr(prompt, "to_messages"):
-                messages = prompt.to_messages()
-                # Try passing just the content string of the first message
-                if messages and hasattr(messages[0], "content"):
-                    prompt_input = messages[0].content
+        if retry_manager is None:
+            retry_manager = UMLRetryManager(max_retries=3)
+        while retry_manager.should_retry():
+            try:
+                prompt = self.construct_prompt(diagram_type, description, theme)
+                if llm_interface is None:
+                    raise ValueError("LLM interface must be provided for diagram generation.")
+                # Extract messages if present (Langchain ChatPromptValue)
+                if hasattr(prompt, "to_messages"):
+                    messages = prompt.to_messages()
+                    if messages and hasattr(messages[0], "content"):
+                        prompt_input = messages[0].content
+                    else:
+                        prompt_input = messages
+                elif hasattr(prompt, "messages"):
+                    messages = prompt.messages
+                    if messages and hasattr(messages[0], "content"):
+                        prompt_input = messages[0].content
+                    else:
+                        prompt_input = messages
+                elif isinstance(prompt, str):
+                    prompt_input = prompt
                 else:
-                    prompt_input = messages
-            elif hasattr(prompt, "messages"):
-                messages = prompt.messages
-                if messages and hasattr(messages[0], "content"):
-                    prompt_input = messages[0].content
-                else:
-                    prompt_input = messages
-            elif isinstance(prompt, str):
-                prompt_input = prompt
-            else:
-                raise TypeError("Prompt is not a recognized type for LLM input.")
-            response = llm_interface.invoke(prompt_input)
-            diagram_code = self.check_content_type(response)
-            # Example: If you construct an image URL here, log it as well
-            # image_url = f"http://plantuml-server/plantuml/png/{urllib.parse.quote(diagram_code)}"
-            # print("DEBUG: PlantUML image URL:", image_url)
-            return diagram_code
-        except Exception as exc:
-            # Optionally log error, re-raise for caller to handle
-            print("ERROR: UML diagram generation failed:", exc)
-            raise RuntimeError(f"UML diagram generation failed: {exc}") from exc
+                    raise TypeError("Prompt is not a recognized type for LLM input.")
+                response = llm_interface.invoke(prompt_input)
+                diagram_code = self.check_content_type(response)
+                return diagram_code
+            except Exception as exc:
+                retry_manager.record_error(exc)
+                print(f"ERROR: UML diagram generation failed (attempt {retry_manager.attempt}):", exc)
+        # After max retries, raise with error context
+        error_msg = (
+            f"UML diagram generation failed after {retry_manager.max_retries} attempts.\n"
+            f"Error context:\n{retry_manager.error_context()}"
+        )
+        raise RuntimeError(error_msg)
