@@ -20,15 +20,10 @@ style:
 .ONESHELL:
 venv:
 	uv venv .venv --clear
-	uv pip install -U pip setuptools wheel && \
-	uv pip install -e ".[dev]"
-	uv pip install -U -e ./llm_utils
-	uv pip install -U -r requirements.txt
-	uv pip install -U -r ./llm_utils/requirements.txt
-	uv pip install "black[jupyter]"
-	uv pip install "mkdocstrings[python]"
-	uv pip install "mkdocs-monorepo-plugin"
-	source .venv/bin/activate
+	source .venv/bin/activate && \
+	uv add setuptools wheel && \
+	uv add -r requirements.txt &&\
+	uv pip install -e ".[dev]" 
 # Docs
 .PHONY: docs
 docs:
