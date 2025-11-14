@@ -12,8 +12,8 @@ help:
 # Styling
 .PHONY: style
 style:
-	black .
-	flake8
+	black . 
+	flake8 
 	python3 -m isort .
 	autopep8 --recursive --aggressive --aggressive .
 # Environment

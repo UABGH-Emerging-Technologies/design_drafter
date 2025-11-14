@@ -9,6 +9,7 @@ from app.v01.single.example import router as v01_example_router
 app = FastAPI(**FORM_API_META)
 app.include_router(v01_example_router)
 
+
 # TODO: standardize in something like aiweb commmon and include from there.
 @app.get("/health")
 def health_check():

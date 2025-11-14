@@ -9,11 +9,14 @@ from Design_Drafter.uml_draft_handler import UMLDraftHandler
 from Design_Drafter.config.config import Design_DrafterConfig
 from llm_utils.aiweb_common.generate.GenericErrorHandler import GenericErrorHandler
 
+
 class DummyPrompt:
     def __init__(self, template):
         self.template = template
+
     def format_prompt(self, **kwargs):
         return f"Diagram: {kwargs.get('diagram_type')}, Desc: {kwargs.get('description')}, Theme: {kwargs.get('theme', '')}"
+
 
 def test_chat_history_scrollable_and_persistent(monkeypatch):
     """
@@ -41,6 +44,7 @@ def test_chat_history_scrollable_and_persistent(monkeypatch):
     # (UI test: would require selenium or gradio test client for full scroll test)
     # Here, we check the formatting and presence only
 
+
 def test_chat_uml_revision_with_error_handler(monkeypatch):
     # Simulate a chat workflow where the first UML generation fails, then succeeds after correction
     handler = UMLDraftHandler(config=Design_DrafterConfig())
@@ -49,6 +53,7 @@ def test_chat_uml_revision_with_error_handler(monkeypatch):
 
     # Simulate LLM interface: first call returns error, second call returns valid UML
     llm_calls = [Exception("LLM error"), "@startuml\nclass Foo\n@enduml"]
+
     class MockLLM:
         def invoke(self, prompt):
             result = llm_calls.pop(0)
@@ -59,7 +64,14 @@ def test_chat_uml_revision_with_error_handler(monkeypatch):
     def operation():
         try:
             from Design_Drafter.uml_draft_handler import UMLRetryManager
-            return handler.process("class", "Foo system", "bluegray", llm_interface=MockLLM(), retry_manager=UMLRetryManager(max_retries=2))
+
+            return handler.process(
+                "class",
+                "Foo system",
+                "bluegray",
+                llm_interface=MockLLM(),
+                retry_manager=UMLRetryManager(max_retries=2),
+            )
         except Exception as e:
             return e
 
@@ -67,6 +79,7 @@ def test_chat_uml_revision_with_error_handler(monkeypatch):
         return isinstance(result, Exception)
 
     corrections = []
+
     def correction_callback(attempt, last_result):
         corrections.append((attempt, str(last_result)))
 
@@ -83,6 +96,7 @@ def test_chat_uml_revision_with_error_handler(monkeypatch):
     assert "@startuml" in str(result)
     assert corrections == [(1, "LLM error")]
 
+
 def test_integration_respects_retry_limit(monkeypatch):
     # Simulate repeated failures and ensure retry limit is respected
     handler = UMLDraftHandler(config=Design_DrafterConfig())
@@ -96,7 +110,14 @@ def test_integration_respects_retry_limit(monkeypatch):
     def operation():
         try:
             from Design_Drafter.uml_draft_handler import UMLRetryManager
-            return handler.process("class", "Foo system", "bluegray", llm_interface=MockLLM(), retry_manager=UMLRetryManager(max_retries=3))
+
+            return handler.process(
+                "class",
+                "Foo system",
+                "bluegray",
+                llm_interface=MockLLM(),
+                retry_manager=UMLRetryManager(max_retries=3),
+            )
         except Exception as e:
             return e
 
@@ -104,6 +125,7 @@ def test_integration_respects_retry_limit(monkeypatch):
         return isinstance(result, Exception)
 
     corrections = []
+
     def correction_callback(attempt, last_result):
         corrections.append(attempt)
 

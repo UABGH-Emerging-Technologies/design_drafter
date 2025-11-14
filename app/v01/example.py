@@ -9,7 +9,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException
 from app.fastapi_config import SINGLE_META
 from app.v01.single.schemas import RequestCategorization
 
-#TODO add tags
+# TODO add tags
 router = APIRouter(tags=[""])
 
 
@@ -47,7 +47,7 @@ def get_task_response(
 async def process_categorize(
     background_tasks: BackgroundTasks, request: RequestCategorization
 ) -> MSExcelResponse:
-    #This example task returns a MS Excel document.
+    # This example task returns a MS Excel document.
     response = get_task_response(request, request.file_encoded, background_tasks)
 
     return response

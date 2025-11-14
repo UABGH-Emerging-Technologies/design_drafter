@@ -51,7 +51,9 @@ exclude = '''
     | .hg
     | .mypy_cache
     | .tox
+    | .venv
     | venv
+    | env
     | _build
     | buck-out
     | build
@@ -65,6 +67,7 @@ ignore = "E501,W6"  # or ["E501", "W6"]
 in-place = true
 recursive = true
 list_fixes= true
+exclude=["autopep8"]
 aggressive = 2
 
 # iSort

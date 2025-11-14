@@ -5,14 +5,16 @@ Gradio-based UML Diagram Generator App
 - Uses LLM-based NLPParser (llm_utils/aiweb_common/generate)
 - Orchestrates DiagramBuilder, Validator, PlantUML rendering, and preview/download
 """
+
 import logging
 
 import gradio as gr
-from typing import Tuple, Optional, Any, Callable
+from typing import Tuple, Optional
 
 # Workaround for local llm_utils and Design_Drafter import
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent / "llm_utils"))
 sys.path.append(str(Path(__file__).parent.parent))
 
@@ -22,6 +24,7 @@ from Design_Drafter.config.config import Design_DrafterConfig
 # Import UMLDraftHandler for diagram generation
 from Design_Drafter.uml_draft_handler import UMLDraftHandler
 from llm_utils.aiweb_common.generate.ChatResponse import ChatResponseHandler
+
 # Use config for diagram types
 
 import requests
@@ -31,6 +34,7 @@ from PIL import Image, ImageDraw, ImageFont
 import re
 import zlib
 import base64
+
 
 def _plantuml_encode(text: str) -> str:
     """
@@ -45,11 +49,14 @@ def _plantuml_encode(text: str) -> str:
     # See: https://plantuml.com/text-encoding
     trans = str.maketrans(
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
-        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
+        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_",
     )
     return b64.translate(trans)
 
-def generate_diagram(description: str, diagram_type: str, theme: Optional[str] = None) -> Tuple[str, Image.Image | None, str]:
+
+def generate_diagram(
+    description: str, diagram_type: str, theme: Optional[str] = None
+) -> Tuple[str, Image.Image | None, str]:
     """
     Main handler for diagram generation.
     Returns:
@@ -60,28 +67,24 @@ def generate_diagram(description: str, diagram_type: str, theme: Optional[str] =
     try:
         api_key = Design_DrafterConfig.LLM_API_KEY
     except KeyError:
-        return (
-            "",
-            None,
-            Design_DrafterConfig.API_KEY_MISSING_MSG
-        )
+        return ("", None, Design_DrafterConfig.API_KEY_MISSING_MSG)
 
     # Instantiate UMLDraftHandler
     handler = UMLDraftHandler()
     handler._init_openai(
-        openai_compatible_endpoint = Design_DrafterConfig.LLM_API_BASE, 
-        openai_compatible_key = api_key,
-        openai_compatible_model = Design_DrafterConfig.LLM_MODEL,
-        name = "Design_Drafter"
+        openai_compatible_endpoint=Design_DrafterConfig.LLM_API_BASE,
+        openai_compatible_key=api_key,
+        openai_compatible_model=Design_DrafterConfig.LLM_MODEL,
+        name="Design_Drafter",
     )
-    
+
     # Generate diagram using handler
     try:
         plantuml_code = handler.process(
             diagram_type=diagram_type,
             description=description,
             theme=theme,
-            llm_interface=handler.llm_interface
+            llm_interface=handler.llm_interface,
         )
         status_msg = Design_DrafterConfig.DIAGRAM_SUCCESS_MSG
     except Exception as e:
@@ -91,7 +94,9 @@ def generate_diagram(description: str, diagram_type: str, theme: Optional[str] =
         status_msg = f"LLM error: {e}. Showing fallback stub."
 
     # --- Strip code block markers and whitespace ---
-    plantuml_code = re.sub(r"^```(?:plantuml)?\s*|```$", "", plantuml_code.strip(), flags=re.MULTILINE).strip()
+    plantuml_code = re.sub(
+        r"^```(?:plantuml)?\s*|```$", "", plantuml_code.strip(), flags=re.MULTILINE
+    ).strip()
 
     # --- Proper PlantUML encoding (deflate+base64+URL-safe) ---
     encoded = _plantuml_encode(plantuml_code)
@@ -133,7 +138,9 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
             interactive=True,
             show_label=True,
         )
-        chat_input = gr.Textbox(label="UML Chat Input", placeholder="Type your UML question or change...", lines=2)
+        chat_input = gr.Textbox(
+            label="UML Chat Input", placeholder="Type your UML question or change...", lines=2
+        )
         submit_chat_btn = gr.Button("Send to UML Chat")
     with gr.Row():
         # Make chatbox scrollable and persistent for full history
@@ -148,7 +155,7 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
             container=True,  # enables scrollable container
             min_width=400,
             elem_id="uml-chatbox",
-            elem_classes=["scrollable-chatbox"]
+            elem_classes=["scrollable-chatbox"],
         )
 
     # Remove initial text input and diagram type controls
@@ -163,11 +170,12 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
 
     # State for chat history and context
     # State for chat history as list of dicts with explicit role
-    chat_state = gr.State([])  # List of dicts: {"role": "user"/"assistant"/"system"/"error", "content": ...}
+    chat_state = gr.State(
+        []
+    )  # List of dicts: {"role": "user"/"assistant"/"system"/"error", "content": ...}
 
     # State for revised UML code (for chat-based revision workflow)
     revised_uml_code = gr.State("")
-
 
     from Design_Drafter.utils.plantuml_extractor import extract_last_plantuml_block
 
@@ -214,9 +222,11 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
         logging.basicConfig(level=logging.DEBUG)
         if not chat_history:
             chat_history = []
+
         # Escape curly braces in user input and PlantUML code to avoid template variable mismatch
         def escape_curly(text: str) -> str:
             return text.replace("{", "{{").replace("}", "}}")
+
         safe_user_input = escape_curly(user_input)
         safe_plantuml_code = escape_curly(plantuml_code_text.strip())
         # Add user suggestion
@@ -251,16 +261,19 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
             openai_compatible_endpoint=Design_DrafterConfig.LLM_API_BASE,
             openai_compatible_key=Design_DrafterConfig.LLM_API_KEY,
             openai_compatible_model=Design_DrafterConfig.LLM_MODEL,
-            name="Design_Drafter"
+            name="Design_Drafter",
         )
         from Design_Drafter.uml_draft_handler import UMLRetryManager
+
         retry_manager = UMLRetryManager(max_retries=3)
         raw_response = None
         error_feedback = ""
         pil_image = None  # Always defined before loop
         for attempt in range(1, retry_manager.max_retries + 1):
             try:
-                chat_response_handler = ChatResponseHandler(handler.llm_interface, prompt=system_msg)
+                chat_response_handler = ChatResponseHandler(
+                    handler.llm_interface, prompt=system_msg
+                )
                 chat_response = chat_response_handler.generate_response(messages)
                 raw_response = chat_response.response.content
                 extracted_plantuml = extract_last_plantuml_block(raw_response)
@@ -276,7 +289,9 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
                 status_msg = error_msg
                 error_feedback = f"⚠️ {error_msg}"
                 if not retry_manager.should_retry():
-                    error_feedback += f"\nMax retries reached. Error context:\n{retry_manager.error_context()}"
+                    error_feedback += (
+                        f"\nMax retries reached. Error context:\n{retry_manager.error_context()}"
+                    )
                     break
             except Exception as e:
                 retry_manager.record_error(e)
@@ -285,7 +300,9 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
                 pil_image, status_msg = None, error_msg
                 error_feedback = f"⚠️ {error_msg}"
                 if not retry_manager.should_retry():
-                    error_feedback += f"\nMax retries reached. Error context:\n{retry_manager.error_context()}"
+                    error_feedback += (
+                        f"\nMax retries reached. Error context:\n{retry_manager.error_context()}"
+                    )
                     break
 
         # For Gradio Chatbot, display all messages (user, assistant, system, error)
@@ -293,15 +310,9 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
         for msg in chat_history:
             # Format error/system messages for UI clarity
             if msg["role"] == "error":
-                gradio_chat_history.append({
-                    "role": "error",
-                    "content": f"❌ {msg['content']}"
-                })
+                gradio_chat_history.append({"role": "error", "content": f"❌ {msg['content']}"})
             elif msg["role"] == "system":
-                gradio_chat_history.append({
-                    "role": "system",
-                    "content": f"ℹ️ {msg['content']}"
-                })
+                gradio_chat_history.append({"role": "system", "content": f"ℹ️ {msg['content']}"})
             else:
                 gradio_chat_history.append({"role": msg["role"], "content": msg["content"]})
 
@@ -319,6 +330,7 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
         if img_bytes is None:
             # Create a simple error image (red X or text)
             from PIL import ImageDraw, ImageFont
+
             error_img = Image.new("RGB", (600, 300), color="white")
             draw = ImageDraw.Draw(error_img)
             # Try to use a default font, fallback if not available
@@ -372,15 +384,10 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
 
     # --- Chat-based UML revision workflow with error handling ---
 
-
     # --- UI Logic Wiring ---
     # Remove generate_btn.click wiring, as diagram generation is now handled via chat only
 
-    rerender_btn.click(
-        fn=on_rerender,
-        inputs=[plantuml_code],
-        outputs=[image, status]
-    )
+    rerender_btn.click(fn=on_rerender, inputs=[plantuml_code], outputs=[image, status])
 
     # Update UML context display whenever PlantUML code changes
 
@@ -389,7 +396,7 @@ with gr.Blocks(title="UML Diagram Generator") as demo:
         fn=on_chat_submit,
         inputs=[chat_input, chat_state, plantuml_code, diagram_type_dropdown],
         outputs=[chatbox, chat_input, plantuml_code, image, status],
-        queue=False
+        queue=False,
     )
 
     # Add a button for submitting revised UML code (for error correction workflow)

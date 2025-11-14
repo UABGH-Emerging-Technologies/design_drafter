@@ -7,6 +7,8 @@ Refactored to inherit WorkflowHandler and provide methods for:
 
 No UI/Gradio code.
 """
+
+
 class UMLRetryManager:
     """
     Tracks retry count and error context for UML rendering attempts.
@@ -35,8 +37,10 @@ class UMLRetryManager:
     def error_context(self) -> str:
         return "\n".join(f"Attempt {i+1}: {msg}" for i, msg in enumerate(self.errors))
 
+
 from pathlib import Path
 from typing import Optional, Any
+
 
 def escape_curly_braces(val: Optional[str]) -> Optional[str]:
     """
@@ -50,8 +54,10 @@ def escape_curly_braces(val: Optional[str]) -> Optional[str]:
         return val
     return val.replace("{", "{{").replace("}", "}}")
 
+
 from llm_utils.aiweb_common.WorkflowHandler import WorkflowHandler
 from Design_Drafter.config.config import Design_DrafterConfig
+
 
 class UMLDraftHandler(WorkflowHandler):
     """
@@ -122,9 +128,7 @@ class UMLDraftHandler(WorkflowHandler):
             malformed_jinja2.append("Unbalanced Jinja2 block tags")
 
         if malformed_py or malformed_jinja2:
-            raise ValueError(
-                f"Malformed placeholder(s) found: {malformed_jinja2 + malformed_py}"
-            )
+            raise ValueError(f"Malformed placeholder(s) found: {malformed_jinja2 + malformed_py}")
 
         # 3. Required placeholders (must be present in either style)
         all_placeholders = py_placeholders | jinja2_placeholders
@@ -235,7 +239,9 @@ class UMLDraftHandler(WorkflowHandler):
                 return diagram_code
             except Exception as exc:
                 retry_manager.record_error(exc)
-                print(f"ERROR: UML diagram generation failed (attempt {retry_manager.attempt}):", exc)
+                print(
+                    f"ERROR: UML diagram generation failed (attempt {retry_manager.attempt}):", exc
+                )
         # After max retries, raise with error context
         error_msg = (
             f"UML diagram generation failed after {retry_manager.max_retries} attempts.\n"

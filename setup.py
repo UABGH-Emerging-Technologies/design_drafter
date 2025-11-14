@@ -33,7 +33,7 @@ dev_packages = [
 
 # Define our package
 setup(
-    name="Design_Drafter",
+    name="design_drafter",
     version="0.01",
     description="An app to allow creation and refinement of UML diagrams fromo plain language text with generative AI and plantUML",
     author="Ryan Godwin",
