@@ -27,15 +27,15 @@ venv:
 
 .PHONY: npm-install
 npm-install:
-	cd umlai-ts && npm install
+	cd app/frontend && npm install
 
 .PHONY: npm-build
 npm-build:
-	cd umlai-ts && npm run build
+	cd app/frontend && npm run build
 
 .PHONY: npm-dev
 npm-dev:
-	cd umlai-ts && npm run dev
+	cd app/frontend && npm run dev
 
 .PHONY: test
 test:

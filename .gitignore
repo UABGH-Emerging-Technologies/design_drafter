@@ -155,6 +155,11 @@ venv.bak/
 *.log
 *.tmp
 
+# Node/Next.js artifacts
+node_modules/
+.next/
+*.tsbuildinfo
+
 # Spyder project settings
 .spyderproject
 .spyproject

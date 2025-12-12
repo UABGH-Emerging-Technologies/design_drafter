@@ -14,7 +14,15 @@ if ! command -v npm &> /dev/null; then
 fi
 
 # Install/update Node/TypeScript dependencies for frontend
-cd "/workspaces/design_drafter/umlai-ts" && npm install
+REPO_DIR="/workspaces/design_drafter"
+FRONTEND_DIR="${REPO_DIR}/app/frontend"
+cd "$FRONTEND_DIR" && npm install
+
+# Build the production Next.js bundle required by `npm start`
+if ! npm run build; then
+    echo "Next.js build failed; see errors above."
+    exit 1
+fi
 
 # Auto-activate the venv for new shells (append to shell rc files)
 echo 'source /workspaces/design_drafter/.venv/bin/activate' >> /home/vscode/.bashrc
@@ -26,11 +34,19 @@ echo 'export PYTHONPATH="/workspaces/design_drafter/llm_utils:${PYTHONPATH}"' >>
 # MLFlow setup (tracking URI for MLFlow experiments)
 export MLFLOW_TRACKING_URI="http://localhost:5000/"
 
-# Start the Typescript app instead of the Gradio Python app
+# Start the Gradio API (background) and TypeScript app
 if [ -f "/workspaces/design_drafter/.venv/bin/activate" ]; then
     source /workspaces/design_drafter/.venv/bin/activate
 else
     echo "Python virtualenv not found at /workspaces/design_drafter/.venv/bin/activate"
     exit 1
 fi
-cd "/workspaces/design_drafter/umlai-ts" && exec npm start
+
+# Launch the Gradio API backend
+export NEXT_PUBLIC_GRADIO_API_BASE="http://127.0.0.1:7860"
+cd "$REPO_DIR"
+uvicorn gradio_app:app --host 0.0.0.0 --port 7860 &
+GRADIO_PID=$!
+echo "Started Gradio backend (PID $GRADIO_PID)"
+
+cd "$FRONTEND_DIR" && exec npm start
