@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
@@ -37,28 +37,87 @@ import {
 	Check,
 } from 'lucide-react'
 
-import { templates } from '@/constants'
+import { DIAGRAM_TEMPLATES, DIAGRAM_TYPES, DEFAULT_DIAGRAM_TYPE } from '@/constants'
 import { generateUMLAction } from '@/actions/uml.action'
 import UMLViewer from '@/components/UMLViewer'
 
+type ChatMessage = {
+	id: string
+	role: 'user' | 'assistant' | 'system' | 'error'
+	content: string
+}
+
+const createMessageId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+const MAX_HISTORY_MESSAGES = 10
+
+const summarizeChatHistory = (history: ChatMessage[]) => {
+	const relevant = history.slice(-MAX_HISTORY_MESSAGES)
+	return relevant
+		.map(msg => {
+			const label =
+				msg.role === 'user'
+					? 'User'
+					: msg.role === 'assistant'
+						? 'Assistant'
+						: msg.role === 'error'
+							? 'Error'
+							: 'System'
+			return `${label}: ${msg.content}`
+		})
+		.join('\n')
+}
+
+const extractPlantUmlBlock = (code: string | null | undefined) => {
+	if (!code) return null
+	const match = code.match(/@startuml[\s\S]*@enduml/i)
+	return match ? match[0] : null
+}
+
+const buildPromptDescription = ({
+	diagramType,
+	currentCode,
+	chatSummary,
+	latestRequest,
+}: {
+	diagramType: string
+	currentCode: string
+	chatSummary: string
+	latestRequest: string
+}) => {
+	const instructions = [
+		'You are an expert UML assistant.',
+		`Always return valid PlantUML code for a ${diagramType} diagram, enclosed between @startuml and @enduml.`,
+		'Do not include explanations, markdown fences, or commentary—only PlantUML.',
+	]
+
+	const currentSection = currentCode
+		? `Current PlantUML diagram:\n${currentCode}\n`
+		: 'No diagram has been created yet.'
+
+	const historySection = chatSummary ? `Recent conversation:\n${chatSummary}\n` : ''
+
+	return [
+		instructions.join(' '),
+		currentSection,
+		historySection,
+		`Latest user request:\n${latestRequest}`,
+		'Update the PlantUML diagram to satisfy the latest request while preserving relevant structure.',
+	].join('\n\n')
+}
+
 export default function UMLGenerator() {
-	const [description, setDescription] = useState('')
-	const [umlCode, setUmlCode] = useState('')
+	const [chatInput, setChatInput] = useState('')
+	const [chatHistory, setChatHistory] = useState<ChatMessage[]>([])
+	const [diagramType, setDiagramType] = useState(DEFAULT_DIAGRAM_TYPE)
+	const [umlCode, setUmlCode] = useState(DIAGRAM_TEMPLATES[DEFAULT_DIAGRAM_TYPE] ?? '')
 	const [isGenerating, setIsGenerating] = useState(false)
+	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [isDarkMode, setIsDarkMode] = useState(false)
 	const [activeTab, setActiveTab] = useState('split')
 	const editorRef = useRef<HTMLDivElement>(null)
-	const [diagramType, setDiagramType] = useState('class')
 	const [image, setImage] = useState('')
 	const [isCopied, setIsCopied] = useState(false)
 	const [errorMsg, setErrorMsg] = useState<string | null>(null)
-	// Initialize editor with default template
-	useEffect(() => {
-		if (typeof window !== 'undefined' && editorRef.current) {
-			// TODO: Implement ace editor initialization
-			setUmlCode(templates.class)
-		}
-	}, [])
 
 	// Toggle dark mode
 	useEffect(() => {
@@ -69,19 +128,39 @@ export default function UMLGenerator() {
 		}
 	}, [isDarkMode])
 
-	// Calls backend API to generate UML and updates UI state
-	const generateUML = async () => {
-		if (!description.trim()) return
+	const handleSendMessage = async () => {
+		const trimmedInput = chatInput.trim()
+		if (!trimmedInput) return
+
+		const userMessage: ChatMessage = {
+			id: createMessageId(),
+			role: 'user',
+			content: trimmedInput,
+		}
+
+		const pendingHistory = [...chatHistory, userMessage]
+		setChatHistory(pendingHistory)
+		setChatInput('')
 
 		try {
 			setIsGenerating(true)
 			setErrorMsg(null)
 			setImage('')
-			setUmlCode('')
-			const result = await generateUMLAction(description, diagramType)
+
+			const historyPrompt = summarizeChatHistory(pendingHistory)
+			const composedDescription = buildPromptDescription({
+				diagramType,
+				currentCode: umlCode,
+				chatSummary: historyPrompt,
+				latestRequest: trimmedInput,
+			})
+
+			const result = await generateUMLAction(composedDescription, diagramType)
 			if (result.status === 'ok') {
-				setUmlCode(result.plantuml_code || '')
-				// Prefer base64 image, fallback to image_url
+				const normalizedCode = extractPlantUmlBlock(result.plantuml_code) ?? umlCode
+				if (normalizedCode && normalizedCode !== umlCode) {
+					setUmlCode(normalizedCode)
+				}
 				if (result.image_base64) {
 					setImage(`data:image/png;base64,${result.image_base64}`)
 				} else if (result.image_url) {
@@ -89,22 +168,41 @@ export default function UMLGenerator() {
 				} else {
 					setImage('')
 				}
+				setIsRefreshing(false)
+				setChatHistory(prev => [
+					...prev,
+					{
+						id: createMessageId(),
+						role: 'assistant',
+						content: result.message || 'Diagram updated. Share your next change request!',
+					},
+				])
+				setErrorMsg(null)
 			} else {
-				setErrorMsg(result.message || 'Failed to generate UML diagram')
+				const failureMsg = result.message || 'Failed to generate UML diagram'
+				setErrorMsg(failureMsg)
+				setChatHistory(prev => [
+					...prev,
+					{ id: createMessageId(), role: 'error', content: failureMsg },
+				])
 			}
 		} catch (error: unknown) {
 			console.error(error)
-			if (error instanceof Error) {
-				setErrorMsg(error.message || 'Something went wrong/Out of credits')
-				return
-			}
-			setErrorMsg('Something went wrong/Out of credits')
+			const message =
+				error instanceof Error
+					? error.message || 'Something went wrong/Out of credits'
+					: 'Something went wrong/Out of credits'
+			setErrorMsg(message)
+			setChatHistory(prev => [
+				...prev,
+				{ id: createMessageId(), role: 'error', content: message },
+			])
 		} finally {
 			setIsGenerating(false)
 		}
 	}
 
-	// Render UML diagram image or error
+	// Render helpers
 	const renderUML = () => {
 		if (errorMsg) {
 			return (
@@ -116,14 +214,56 @@ export default function UMLGenerator() {
 		return (
 			<UMLViewer
 				umlCode={umlCode}
-				isGenerating={isGenerating}
+				isGenerating={isBusy}
 				imageUrl={image || undefined}
-				onImageGenerate={setImage}
+				onImageGenerate={handleImageGenerate}
 			/>
 		)
 	}
+
+	const renderChatHistory = () => {
+		if (chatHistory.length === 0) {
+			return (
+				<p className="text-sm text-muted-foreground">
+					No messages yet. Describe a system or ask for a change to get started.
+				</p>
+			)
+		}
+
+		return chatHistory.map(message => {
+			const label =
+				message.role === 'user'
+					? 'You'
+					: message.role === 'assistant'
+						? 'Assistant'
+						: message.role === 'system'
+							? 'System'
+							: 'Error'
+			const accentClass =
+				message.role === 'user'
+					? 'text-primary'
+					: message.role === 'assistant'
+						? 'text-emerald-500'
+						: message.role === 'error'
+							? 'text-destructive'
+							: 'text-muted-foreground'
+
+			return (
+				<div key={message.id} className="mb-3 last:mb-0">
+					<p className={`text-xs font-semibold uppercase ${accentClass}`}>{label}</p>
+					<p className="text-sm whitespace-pre-wrap">{message.content}</p>
+				</div>
+			)
+		})
+	}
+
 	const handleTemplateChange = (type: string) => {
 		setDiagramType(type)
+		const nextTemplate = DIAGRAM_TEMPLATES[type]
+		const currentTemplate = DIAGRAM_TEMPLATES[diagramType]
+		if (nextTemplate && (umlCode.trim().length === 0 || umlCode === currentTemplate)) {
+			setUmlCode(nextTemplate)
+		}
 	}
 
 	const handleCopy = () => {
@@ -135,6 +275,9 @@ export default function UMLGenerator() {
 	}
 
 	const handleDownload = async () => {
+		if (!image) {
+			return
+		}
 		try {
 			// Fetch the SVG content from the PlantUML URL
 			const response = await fetch(image)
@@ -163,15 +306,31 @@ export default function UMLGenerator() {
 		}
 	}
 
+	const handleManualUpdate = () => {
+		if (!umlCode.trim()) {
+			return
+		}
+		setErrorMsg(null)
+		setIsRefreshing(true)
+		setImage('')
+	}
+
+	const handleImageGenerate = useCallback((url: string) => {
+		setImage(url)
+		setIsRefreshing(false)
+	}, [])
+
+	const isBusy = isGenerating || isRefreshing
+
 	return (
 		<div className={`min-h-screen bg-background text-foreground`}>
 			<header className="border-b">
 				<div className="container mx-auto px-4 py-3 flex items-center justify-between">
 					<div className="flex items-center gap-2">
 						<FileCode className="h-6 w-6 text-primary" />
-						<h1 className="text-xl font-bold">AI UML Generator</h1>
-						<Badge variant="outline" className="ml-2">
-							Beta
+						<h1 className="text-xl font-bold">Model Foundry</h1>
+						<Badge variant="accent" className="ml-2 uppercase tracking-wide">
+							Alpha
 						</Badge>
 					</div>
 					<div className="flex items-center gap-4">
@@ -213,46 +372,30 @@ export default function UMLGenerator() {
 			</header>
 
 			<main className="container mx-auto px-4 py-6">
-				<div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+				<div className="mb-6">
+					<Card>
+						<CardContent className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between p-4">
+							<div className="flex items-center gap-2">
+								<Lightbulb className="h-5 w-5 text-primary" />
+								<h2 className="text-base font-semibold">Tips</h2>
+							</div>
+							<ul className="text-sm text-muted-foreground grid gap-1 md:grid-cols-2 md:gap-x-4 md:gap-y-1">
+								<li>• Select the diagram you need.</li>
+								<li>• When revising, refer to existing elements</li>
+								<li>• Switch templates to explore other UML diagram types.</li>
+								<li>• Fine-tune the PlantUML code directly in the editor.</li>
+								<li>• Refresh the page to wipe memory - save prompts elsewhere as necessary</li>
+							</ul>
+						</CardContent>
+					</Card>
+				</div>
+
+				<div className="grid grid-cols-1 lg:grid-cols-[1.3fr_2.7fr] gap-6">
 					{/* Sidebar */}
-					<div className="lg:col-span-1">
+					<div>
 						<Card>
 							<CardContent className="p-4">
 								<div className="space-y-4">
-									<div>
-										<h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-											<Sparkles className="h-4 w-4 text-primary" />
-											AI Generation
-										</h3>
-										<div className="space-y-3">
-											<Textarea
-												placeholder="Describe your system in natural language..."
-												value={description}
-												onChange={e => setDescription(e.target.value)}
-												className="min-h-[120px]"
-											/>
-											<Button
-												onClick={generateUML}
-												className="w-full"
-												disabled={isGenerating || !description.trim()}
-											>
-												{isGenerating ? (
-													<>
-														<RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-														Generating...
-													</>
-												) : (
-													<>
-														<Zap className="mr-2 h-4 w-4" />
-														Generate UML
-													</>
-												)}
-											</Button>
-										</div>
-									</div>
-
-									<Separator />
-
 									<div>
 										<h3 className="text-lg font-medium mb-2 flex items-center gap-2">
 											<LayoutTemplate className="h-4 w-4 text-primary" />
@@ -267,19 +410,11 @@ export default function UMLGenerator() {
 													<SelectValue placeholder="Select template" />
 												</SelectTrigger>
 												<SelectContent>
-													<SelectItem value="class">Class Diagram</SelectItem>
-													<SelectItem value="sequence">
-														Sequence Diagram
-													</SelectItem>
-													<SelectItem value="usecase">
-														Use Case Diagram
-													</SelectItem>
-													<SelectItem value="activity">
-														Activity Diagram
-													</SelectItem>
-													<SelectItem value="component">
-														Component Diagram
-													</SelectItem>
+													{DIAGRAM_TYPES.map(type => (
+														<SelectItem key={type} value={type}>
+															{type} Diagram
+														</SelectItem>
+													))}
 												</SelectContent>
 											</Select>
 										</div>
@@ -289,15 +424,43 @@ export default function UMLGenerator() {
 
 									<div>
 										<h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-											<Lightbulb className="h-4 w-4 text-primary" />
-											Tips
+											<Sparkles className="h-4 w-4 text-primary" />
+											UML Chat Assistant
 										</h3>
-										<ul className="text-sm space-y-2 text-muted-foreground">
-											<li>• Use natural language to describe your system</li>
-											<li>• Mention entities and their relationships</li>
-											<li>• Specify diagram type (class, sequence, etc.)</li>
-											<li>• Edit the generated code for fine-tuning</li>
-										</ul>
+										<div className="space-y-3">
+											<div className="border rounded-md bg-muted/40 p-3 h-56 overflow-y-auto">
+												{renderChatHistory()}
+											</div>
+											<Textarea
+												placeholder="Ask for a diagram or request a change (Shift+Enter for new line)..."
+												value={chatInput}
+												onChange={e => setChatInput(e.target.value)}
+												onKeyDown={event => {
+													if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+														event.preventDefault()
+														handleSendMessage()
+													}
+												}}
+												className="min-h-[100px]"
+											/>
+											<Button
+												onClick={handleSendMessage}
+												className="w-full"
+												disabled={isGenerating || !chatInput.trim()}
+											>
+												{isGenerating ? (
+													<>
+														<RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+														Working...
+													</>
+												) : (
+													<>
+														<Zap className="mr-2 h-4 w-4" />
+														Send Request
+													</>
+												)}
+											</Button>
+										</div>
 									</div>
 								</div>
 							</CardContent>
@@ -305,7 +468,7 @@ export default function UMLGenerator() {
 					</div>
 
 					{/* Main content */}
-					<div className="lg:col-span-3">
+					<div>
 						<Tabs
 							value={activeTab}
 							onValueChange={setActiveTab}
@@ -337,6 +500,24 @@ export default function UMLGenerator() {
 								</TabsList>
 
 								<div className="flex items-center gap-2">
+									<Button
+										onClick={handleManualUpdate}
+										variant="default"
+										size="sm"
+										disabled={!umlCode.trim() || isBusy}
+									>
+										{isRefreshing ? (
+											<>
+												<RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+												Updating...
+											</>
+										) : (
+											<>
+												<RefreshCw className="h-4 w-4 mr-2" />
+												Update Diagram
+											</>
+										)}
+									</Button>
 									<Button onClick={handleCopy} variant="outline" size="sm">
 										{isCopied ? (
 											<Check className="h-4 w-4 mr-2" />
@@ -386,7 +567,7 @@ export default function UMLGenerator() {
 													Diagram Preview
 												</div>
 												<div className="text-xs text-muted-foreground">
-													{isGenerating ? 'Generating...' : 'Ready'}
+													{isBusy ? 'Generating...' : 'Ready'}
 												</div>
 											</div>
 											<div className="h-[500px] overflow-auto">
@@ -425,16 +606,16 @@ export default function UMLGenerator() {
 										<CardContent className="p-0">
 											<div className="border rounded-md">
 												<div className="bg-muted/50 p-2 border-b flex items-center justify-between">
-													<div className="text-sm font-medium">
-														Diagram Preview
-													</div>
-													<div className="text-xs text-muted-foreground">
-														{isGenerating ? 'Generating...' : 'Ready'}
-													</div>
+												<div className="text-sm font-medium">
+													Diagram Preview
 												</div>
-												<div className="h-[500px] border overflow-auto">
-													{renderUML()}
+												<div className="text-xs text-muted-foreground">
+													{isBusy ? 'Generating...' : 'Ready'}
 												</div>
+											</div>
+											<div className="h-[500px] border overflow-auto">
+												{renderUML()}
+											</div>
 											</div>
 										</CardContent>
 									</Card>

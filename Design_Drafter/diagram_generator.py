@@ -2,9 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Any, Optional
 
 from Design_Drafter.prompt_manager import PromptManager
-from llm_utils.aiweb_common.generate import QueryInterface
 from Design_Drafter.retry_policy import RetryPolicy
-from Design_Drafter.exceptions import GenerationError, RetryExceededError
+from Design_Drafter.exceptions import RetryExceededError
 
 class DiagramGenerator(ABC):
     """Abstract base class for diagram generation."""

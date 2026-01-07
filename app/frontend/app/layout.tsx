@@ -1,32 +1,37 @@
+//Adopted from code by Hamidul Islam (https://umlai.vercel.app)
+//https://github.com/hamidlabs/AI-uml-diagram-generator
+//MIT license
+
 import type React from 'react'
 import '@/app/globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-	title: 'AI UML Generator by Hamidul Islam | Create UML Diagrams Instantly',
+	title: 'Model Foundry | Create UML Diagrams Instantly',
 	description:
-		'Generate UML diagrams from natural language using AI. Fast, easy, and accurate UML diagram generation by Hamidul Islam.',
+		'Generate UML diagrams from natural language using AI. Fast, easy, and accurate UML diagram generation by Ryan Godwin.',
 	keywords: [
 		'UML diagrams',
-		'AI UML generator',
-		'Hamidul Islam',
+		'Model Foundry',
 		'UML from natural language',
 		'UML tool',
+		'Model Foundry',
+		'Ryan Godwin',
 		'AI diagram generator',
 	],
-	authors: [{ name: 'Hamidul Islam', url: 'https://umlai.vercel.app' }],
+	authors: [{ name: 'Ryan Godwin', url: 'https://ai-preview.anes.uab.edu' }],
 	openGraph: {
-		title: 'AI UML Generator by Hamidul Islam',
+		title: 'Model Foundry',
 		description:
-			'Generate UML diagrams from natural language using AI. Fast, easy, and accurate UML diagram generation by Hamidul Islam.',
-		url: 'https://umlai.vercel.app',
-		siteName: 'AI UML Generator',
+			'Generate UML diagrams from natural language using AI. Fast and easy UML diagram generation.',
+		url: 'https://ai-preview.anes.uab.edu',
+		siteName: 'Model Foundry',
 		images: [
 			{
-				url: 'https://umlai.vercel.app/cover.png', // Add an OpenGraph image for social sharing
+				url: 'https://ai-preview.anes.uab.edu/cover.png', // Add an OpenGraph image for social sharing
 				width: 1200,
 				height: 630,
-				alt: 'AI UML Generator by Hamidul Islam',
+				alt: 'Model Foundry',
 			},
 		],
 		locale: 'en_US',
@@ -34,10 +39,10 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: 'summary_large_image',
-		title: 'AI UML Generator by Hamidul Islam',
+		title: 'Model Foundry',
 		description:
-			'Generate UML diagrams from natural language using AI. Fast, easy, and accurate UML diagram generation by Hamidul Islam.',
-		images: ['https://umlai.vercel.app/cover.png'], // Add a Twitter image for social sharing
+			'Generate UML diagrams from natural language using AI. Fast, easy, and accurate UML diagram generation.',
+		images: ['https://ai-preview.anes.uab.edu/cover.png'], // Add a Twitter image for social sharing
 	},
 	robots: {
 		index: true,
@@ -52,7 +57,7 @@ export const metadata: Metadata = {
 			'max-snippet': -1,
 		},
 	},
-	metadataBase: new URL('https://umlai.vercel.app/'), // Replace with your actual domain
+	metadataBase: new URL('https://ai-preview.anes.uab.edu/'), // Replace with your actual domain
 	alternates: {
 		canonical: '/', // Add canonical URL to avoid duplicate content issues
 	},

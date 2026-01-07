@@ -32,7 +32,7 @@ echo 'source /workspaces/design_drafter/.venv/bin/activate' >> /home/vscode/.zsh
 echo 'export PYTHONPATH="/workspaces/design_drafter/llm_utils:${PYTHONPATH}"' >> ~/.profile
 
 # MLFlow setup (tracking URI for MLFlow experiments)
-export MLFLOW_TRACKING_URI="http://localhost:5000/"
+#export MLFLOW_TRACKING_URI="http://localhost:5000/"
 
 # Start the Gradio API (background) and TypeScript app
 if [ -f "/workspaces/design_drafter/.venv/bin/activate" ]; then
