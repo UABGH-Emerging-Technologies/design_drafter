@@ -1,65 +1,64 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { generateUMLAction } from '@/actions/uml.action'
+import UMLViewer from '@/components/UMLViewer'
+import {
+	DEFAULT_DIAGRAM_TYPE,
+	DIAGRAM_TYPES,
+	templates,
+} from '@/constants'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
+	Check,
+	Code,
+	Copy,
+	Download,
+	FileCode,
+	LayoutTemplate,
+	Lightbulb,
+	Moon,
+	RefreshCw,
+	Sparkles,
+	Sun,
+	Zap,
+} from 'lucide-react'
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { Switch } from '@/components/ui/switch'
-import { Separator } from '@/components/ui/separator'
-import { Badge } from '@/components/ui/badge'
-import {
-	Download,
-	Copy,
-	Code,
-	FileCode,
-	Sparkles,
-	RefreshCw,
-	Zap,
-	Lightbulb,
-	LayoutTemplate,
-	Moon,
-	Sun,
-	Check,
-} from 'lucide-react'
 
-import UMLViewer from '@/components/UMLViewer'
-import { templates } from '@/constants'
-import { generateUMLAction } from '@/actions/uml.action'
+const DEFAULT_TEMPLATE = templates[DEFAULT_DIAGRAM_TYPE] ?? ''
 
 export default function UMLGenerator() {
 	const [description, setDescription] = useState('')
-	const [umlCode, setUmlCode] = useState('')
+	const [umlCode, setUmlCode] = useState(DEFAULT_TEMPLATE)
+	const [diagramType, setDiagramType] = useState(DEFAULT_DIAGRAM_TYPE)
 	const [isGenerating, setIsGenerating] = useState(false)
+	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [isDarkMode, setIsDarkMode] = useState(false)
-	const [activeTab, setActiveTab] = useState('editor')
-	const editorRef = useRef<HTMLDivElement>(null)
-	const [diagramType, setDiagramType] = useState('class')
+	const [activeTab, setActiveTab] = useState('split')
 	const [image, setImage] = useState('')
 	const [isCopied, setIsCopied] = useState(false)
-	// Initialize editor with default template
+	const [refreshNonce, setRefreshNonce] = useState(0)
+
 	useEffect(() => {
-		if (typeof window !== 'undefined' && editorRef.current) {
-			// TODO: Implement ace editor initialization
-			setUmlCode(templates.class)
+		const initialTemplate = templates[DEFAULT_DIAGRAM_TYPE]
+		if (initialTemplate) {
+			setUmlCode(initialTemplate)
 		}
 	}, [])
 
-	// Toggle dark mode
 	useEffect(() => {
 		if (isDarkMode) {
 			document.documentElement.classList.add('dark')
@@ -68,28 +67,48 @@ export default function UMLGenerator() {
 		}
 	}, [isDarkMode])
 
-	// Mock AI generation function
+	const handleTemplateChange = (type: string) => {
+		setDiagramType(type)
+		const nextTemplate = templates[type]
+		if (nextTemplate) {
+			setUmlCode(nextTemplate)
+		}
+		setImage('')
+		setIsRefreshing(true)
+		setRefreshNonce(Date.now())
+	}
+
+	const handleManualUpdate = () => {
+		if (!umlCode.trim()) return
+		setImage('')
+		setIsRefreshing(true)
+		setRefreshNonce(Date.now())
+	}
+
+	const handleImageGenerate = useCallback((url: string) => {
+		setImage(url)
+		setIsRefreshing(false)
+	}, [])
+
 	const generateUML = async () => {
 		if (!description.trim()) return
-
 		try {
 			setIsGenerating(true)
+			setIsRefreshing(true)
 			const uml = (await generateUMLAction(description, diagramType)) as string
-			setUmlCode(uml)
+			if (uml) {
+				setUmlCode(uml)
+				setRefreshNonce(Date.now())
+			} else {
+				setIsRefreshing(false)
+			}
 		} catch (error) {
 			console.error(error)
 			alert('Something went wrong/Out of credits')
+			setIsRefreshing(false)
 		} finally {
 			setIsGenerating(false)
 		}
-	}
-
-	// Mock function to render UML diagram
-	const renderUML = () => {
-		return UMLViewer({ umlCode, isGenerating, setImage })
-	}
-	const handleTemplateChange = (type: string) => {
-		setDiagramType(type)
 	}
 
 	const handleCopy = () => {
@@ -102,26 +121,17 @@ export default function UMLGenerator() {
 
 	const handleDownload = async () => {
 		try {
-			// Fetch the SVG content from the PlantUML URL
 			const response = await fetch(image)
 			if (!response.ok) {
 				throw new Error('Failed to fetch the SVG content')
 			}
-
-			// Convert the response to a Blob
 			const svgBlob = await response.blob()
-
-			// Create a URL for the Blob
 			const url = URL.createObjectURL(svgBlob)
-
-			// Create a temporary anchor element to trigger the download
 			const link = document.createElement('a')
 			link.href = url
-			link.download = 'uml.svg' // Set the filename for the downloaded file
-			document.body.appendChild(link) // Append the link to the DOM (required for Firefox)
-			link.click() // Trigger the download
-
-			// Clean up by revoking the Blob URL and removing the link element
+			link.download = 'uml.svg'
+			document.body.appendChild(link)
+			link.click()
 			URL.revokeObjectURL(url)
 			document.body.removeChild(link)
 		} catch (error) {
@@ -129,8 +139,20 @@ export default function UMLGenerator() {
 		}
 	}
 
+	const isBusy = isGenerating || isRefreshing
+
+	const renderUML = () => (
+		<UMLViewer
+			umlCode={umlCode}
+			isGenerating={isBusy}
+			imageUrl={image || undefined}
+			onImageGenerate={handleImageGenerate}
+			refreshNonce={refreshNonce}
+		/>
+	)
+
 	return (
-		<div className={`min-h-screen bg-background text-foreground`}>
+		<div className="min-h-screen bg-background text-foreground">
 			<header className="border-b">
 				<div className="container mx-auto px-4 py-3 flex items-center justify-between">
 					<div className="flex items-center gap-2">
@@ -164,106 +186,83 @@ export default function UMLGenerator() {
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
-						{/* TODO: Add share and settings functionality */}
-						{/* <Button variant="outline" size="sm">
-							<Share2 className="h-4 w-4 mr-2" />
-							Share
-						</Button>
-
-						<Button variant="outline" size="sm">
-							<Settings className="h-4 w-4 mr-2" />
-							Settings
-						</Button> */}
 					</div>
 				</div>
 			</header>
 
 			<main className="container mx-auto px-4 py-6">
-				<div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+				<div className="mb-6">
+					<Card>
+						<CardContent className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between p-4">
+							<div className="flex items-center gap-2">
+								<Lightbulb className="h-5 w-5 text-primary" />
+								<h2 className="text-base font-semibold">Tips</h2>
+							</div>
+							<ul className="text-sm text-muted-foreground grid gap-1 md:grid-cols-2 md:gap-x-4 md:gap-y-1">
+								<li>• Ask for the diagram you need, then refine.</li>
+								<li>• Reference existing elements when requesting edits.</li>
+								<li>• Switch templates to explore different UML types.</li>
+								<li>• Edit PlantUML directly and refresh the preview.</li>
+							</ul>
+						</CardContent>
+					</Card>
+				</div>
+
+				<div className="grid grid-cols-1 lg:grid-cols-[1.2fr_2.8fr] gap-6">
 					{/* Sidebar */}
-					<div className="lg:col-span-1">
+					<div>
 						<Card>
-							<CardContent className="p-4">
-								<div className="space-y-4">
-									<div>
-										<h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-											<Sparkles className="h-4 w-4 text-primary" />
-											AI Generation
-										</h3>
-										<div className="space-y-3">
-											<Textarea
-												placeholder="Describe your system in natural language..."
-												value={description}
-												onChange={e => setDescription(e.target.value)}
-												className="min-h-[120px]"
-											/>
-											<Button
-												onClick={generateUML}
-												className="w-full"
-												disabled={isGenerating || !description.trim()}
-											>
-												{isGenerating ? (
-													<>
-														<RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-														Generating...
-													</>
-												) : (
-													<>
-														<Zap className="mr-2 h-4 w-4" />
-														Generate UML
-													</>
-												)}
-											</Button>
-										</div>
-									</div>
+							<CardContent className="p-4 space-y-6">
+								<div>
+									<h3 className="text-lg font-medium mb-2 flex items-center gap-2">
+										<LayoutTemplate className="h-4 w-4 text-primary" />
+										Templates
+									</h3>
+									<Select value={diagramType} onValueChange={handleTemplateChange}>
+										<SelectTrigger>
+											<SelectValue placeholder="Select template" />
+										</SelectTrigger>
+										<SelectContent>
+											{DIAGRAM_TYPES.map(option => (
+												<SelectItem key={option.value} value={option.value}>
+													{option.label}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
 
-									<Separator />
+								<Separator />
 
-									<div>
-										<h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-											<LayoutTemplate className="h-4 w-4 text-primary" />
-											Templates
-										</h3>
-										<div className="space-y-2">
-											<Select
-												value={diagramType}
-												onValueChange={handleTemplateChange}
-											>
-												<SelectTrigger>
-													<SelectValue placeholder="Select template" />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectItem value="class">Class Diagram</SelectItem>
-													<SelectItem value="sequence">
-														Sequence Diagram
-													</SelectItem>
-													<SelectItem value="usecase">
-														Use Case Diagram
-													</SelectItem>
-													<SelectItem value="activity">
-														Activity Diagram
-													</SelectItem>
-													<SelectItem value="component">
-														Component Diagram
-													</SelectItem>
-												</SelectContent>
-											</Select>
-										</div>
-									</div>
-
-									<Separator />
-
-									<div>
-										<h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-											<Lightbulb className="h-4 w-4 text-primary" />
-											Tips
-										</h3>
-										<ul className="text-sm space-y-2 text-muted-foreground">
-											<li>• Use natural language to describe your system</li>
-											<li>• Mention entities and their relationships</li>
-											<li>• Specify diagram type (class, sequence, etc.)</li>
-											<li>• Edit the generated code for fine-tuning</li>
-										</ul>
+								<div>
+									<h3 className="text-lg font-medium mb-2 flex items-center gap-2">
+										<Sparkles className="h-4 w-4 text-primary" />
+										UML Chat Assistant
+									</h3>
+									<div className="space-y-3">
+										<Textarea
+											placeholder="Describe your system or the change you want..."
+											value={description}
+											onChange={e => setDescription(e.target.value)}
+											className="min-h-[140px]"
+										/>
+										<Button
+											onClick={generateUML}
+											className="w-full"
+											disabled={isGenerating || !description.trim()}
+										>
+											{isGenerating ? (
+												<>
+													<RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+													Generating...
+												</>
+											) : (
+												<>
+													<Zap className="mr-2 h-4 w-4" />
+													Generate UML
+												</>
+											)}
+										</Button>
 									</div>
 								</div>
 							</CardContent>
@@ -271,38 +270,43 @@ export default function UMLGenerator() {
 					</div>
 
 					{/* Main content */}
-					<div className="lg:col-span-3">
-						<Tabs
-							value={activeTab}
-							onValueChange={setActiveTab}
-							className="w-full"
-						>
-							<div className="flex justify-between items-center mb-4">
+					<div>
+						<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+							<div className="flex flex-wrap justify-between items-center gap-3 mb-4">
 								<TabsList>
-									<TabsTrigger
-										value="editor"
-										className="flex items-center gap-2"
-									>
+									<TabsTrigger value="editor" className="flex items-center gap-2">
 										<Code className="h-4 w-4" />
 										Editor
 									</TabsTrigger>
-									<TabsTrigger
-										value="preview"
-										className="flex items-center gap-2"
-									>
+									<TabsTrigger value="preview" className="flex items-center gap-2">
 										<FileCode className="h-4 w-4" />
 										Preview
 									</TabsTrigger>
-									<TabsTrigger
-										value="split"
-										className="flex items-center gap-2"
-									>
+									<TabsTrigger value="split" className="flex items-center gap-2">
 										<LayoutTemplate className="h-4 w-4" />
 										Split View
 									</TabsTrigger>
 								</TabsList>
 
 								<div className="flex items-center gap-2">
+									<Button
+										onClick={handleManualUpdate}
+										variant="default"
+										size="sm"
+										disabled={!umlCode.trim() || isBusy}
+									>
+										{isRefreshing ? (
+											<>
+												<RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+												Updating...
+											</>
+										) : (
+											<>
+												<RefreshCw className="h-4 w-4 mr-2" />
+												Update Diagram
+											</>
+										)}
+									</Button>
 									<Button onClick={handleCopy} variant="outline" size="sm">
 										{isCopied ? (
 											<Check className="h-4 w-4 mr-2" />
@@ -311,7 +315,12 @@ export default function UMLGenerator() {
 										)}
 										Copy
 									</Button>
-									<Button onClick={handleDownload} variant="outline" size="sm">
+									<Button
+										onClick={handleDownload}
+										variant="outline"
+										size="sm"
+										disabled={!image}
+									>
 										<Download className="h-4 w-4 mr-2" />
 										Export
 									</Button>
@@ -328,10 +337,7 @@ export default function UMLGenerator() {
 													Syntax: PlantUML
 												</div>
 											</div>
-											<div
-												ref={editorRef}
-												className="p-4 font-mono text-sm h-[500px] overflow-auto"
-											>
+											<div className="p-4 font-mono text-sm h-[70vh] overflow-auto">
 												<Textarea
 													value={umlCode}
 													onChange={e => setUmlCode(e.target.value)}
@@ -352,19 +358,17 @@ export default function UMLGenerator() {
 													Diagram Preview
 												</div>
 												<div className="text-xs text-muted-foreground">
-													{isGenerating ? 'Generating...' : 'Ready'}
+													{isBusy ? 'Generating...' : 'Ready'}
 												</div>
 											</div>
-											<div className="h-[500px] overflow-auto">
-												{renderUML()}
-											</div>
+											<div className="h-[70vh] overflow-auto">{renderUML()}</div>
 										</div>
 									</CardContent>
 								</Card>
 							</TabsContent>
 
 							<TabsContent value="split" className="mt-0">
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<div className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-4">
 									<Card>
 										<CardContent className="p-0">
 											<div className="border rounded-md">
@@ -376,7 +380,7 @@ export default function UMLGenerator() {
 														Syntax: PlantUML
 													</div>
 												</div>
-												<div className="p-4 font-mono text-sm h-[500px] overflow-auto">
+												<div className="p-4 font-mono text-sm h-[70vh] overflow-auto">
 													<Textarea
 														value={umlCode}
 														onChange={e => setUmlCode(e.target.value)}
@@ -395,10 +399,10 @@ export default function UMLGenerator() {
 														Diagram Preview
 													</div>
 													<div className="text-xs text-muted-foreground">
-														{isGenerating ? 'Generating...' : 'Ready'}
+														{isBusy ? 'Generating...' : 'Ready'}
 													</div>
 												</div>
-												<div className="h-[500px] border overflow-auto">
+												<div className="h-[70vh] border overflow-auto">
 													{renderUML()}
 												</div>
 											</div>
