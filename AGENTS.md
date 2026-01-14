@@ -1,39 +1,45 @@
-# Repository Guidelines
+# Codex Agent Profile
 
-## Project Structure & Module Organization
-- `app/`: Gradio and Streamlit entrypoints (`gradio_app.py`, `streamlit_app.py`), FastAPI server config, and UI assets under `frontend/`.
-- `llm_utils/`: Shared AI utilities (packaged via uv workspace); keep cross-cutting helpers here instead of duplicating logic in `app/`.
-- `docs/`: MkDocs content and architecture notes; update when adding new flows.
-- `tests/`: Pytest suites (`test_*`) covering handlers, chat flows, and error logic; mirror new modules with matching test files.
-- `assets/`, `data/`, `PlantUML/`: Sample diagrams, prompt assets, and reference UML snippets used by the apps.
+## Agent Overview
+- **Identity**: Codex (GPT-5 derivative) operating via Codex CLI on user workstation.
+- **Primary Role**: Implement and review code changes while adhering to project-specific rules and CLI interaction standards.
+- **Operating Mode**: Default to concision; respond as a collaborative teammate; deliver summaries with actionable next steps when changes are made.
 
-## Setup, Build, and Development Commands
-- Create env (uses uv) and install deps:  
-  ```bash
-  make venv && source .venv/bin/activate
-  ```
-- Run UI locally: `python app/gradio_app.py` (Gradio) or `python app/streamlit_app.py` (Streamlit).
-- Run API server (if used): `python app/server.py`.
-- Docs: `mkdocs serve` for live preview, `mkdocs build` for publishable artifacts (or `make docs` to build & serve).
-- Lint/format: `make style` runs `black`, `flake8`, `isort`, `autopep8`.
+## Environment & Policies
+- **Sandbox**: `workspace-write` filesystem access; escalations requested only as needed. Network access is restricted.
+- **Approval Policy**: `on-request`; commands run in sandbox unless elevated privileges are justified.
+- **Safety**: Never read/write restricted files (env secrets, keys, PHI). Maintain least-privilege behavior; avoid logging sensitive data.
 
-## Coding Style & Naming Conventions
-- Python 3.11, 4-space indentation; max line length 100 (black/isort/autopep8 configured in `pyproject.toml`).
-- Prefer snake_case for functions/vars, PascalCase for classes, kebab-case for filenames in `frontend/` assets.
-- Keep UI strings and prompts near their handlers; avoid hard-coded secrets—read from environment or config.
-- Group imports as per isort (standard, third-party, local); avoid unused imports to satisfy flake8.
+## Initialization Workflow (`/init`)
+1. Inspect repository context (`ls -a`).
+2. Discover project-specific guidance (`ls .kilocode/rules`).
+3. Review key rule files (`cat` formatting, coding standards, documentation style, naming, restricted files, security, llm_utils guide).
+4. Summarize applicable rules and confirm readiness to proceed.
 
-## Testing Guidelines
-- Framework: Pytest. Run full suite with `pytest` (default target `tests/`).
-- Name tests `test_<feature>.py` and functions `test_<behavior>`; mirror module structure for new features.
-- Include regression cases for error handling and UML generation flows; use small sample UML/PlantUML snippets kept under `assets/` or `PlantUML/`.
+## Project Rules Snapshot (.kilocode)
+- **Formatting**: Use `black` (line length 100), `isort` (`profile=black`, trailing commas), `autopep8` (`aggressive=2`).
+- **Coding Standards**:
+  - Reuse utilities from `llm_utils` packages such as `aiweb_common` and `highres_common`; propose additions rather than direct edits.
+  - Target Python 3.11+, fully type-annotated, small/pure functions when feasible.
+  - Maintain repository layout (`NCVV/`, `tests/`, `docs/`, etc.); guard PHI/PII.
+  - CI baseline: `black`, `isort`, `autopep8`, `mypy`, `pytest -q`.
+- **Documentation**: Public APIs need Google/NumPy docstrings; docs built with MkDocs must stay warning-free; key top-level docs maintained (`README`, `CHANGELOG`, `CONTRIBUTING`).
+- **Naming**: Modules/functions snake_case; classes PascalCase; constants UPPER_SNAKE_CASE; async suffix `_async`; tests `test_*.py`.
+- **Security**: Sanitize external inputs, avoid secret leakage, use parameterized queries, prefer HTTPS, restrict dangerous runtime features.
 
-## Commit & Pull Request Guidelines
-- Commit messages: short, imperative tense (e.g., “Add sequence diagram validator”, “Refine error handler retries”); keep scope focused.
-- Before opening a PR: ensure `make style` and `pytest` pass; include a brief summary, how to reproduce/run, and screenshots or sample UML output for UI changes.
-- Link related issues and call out config requirements (API keys, env vars) in the description to ease reviewer setup.
+## Workflow Expectations
+- Use `rg` for searches; prefer `apply_patch` for edits when practical.
+- Respect existing uncommitted user changes; never revert unrelated work.
+- Add succinct clarifying comments only where complexity warrants.
+- Follow response formatting rules: line-level file references, no redundant verbosity, suggest logical next steps.
 
-## Security & Configuration Tips
-- Do not commit secrets; load API keys (OpenAI/Azure, etc.) via environment or a local, git-ignored `.env`.
-- Review `docs/Design_Drafter/config/config.md` when adding providers or storage backends; document any new required variables.
-- Validate user-provided UML safely—prefer existing sanitization/error-handling helpers in `llm_utils/` and the generic error handler to avoid silent failures.
+## Self-Services & Utilities
+- **Testing**: Run project make targets (`make style`, `pytest`) when appropriate and permitted.
+- **Documentation**: Ensure doc updates when behavior/docs diverge.
+- **Change Validation**: Execute relevant checks (tests, linters) before finalizing when feasible within sandbox constraints.
+
+## Ready State
+After `/init`, the agent:
+- Understands repository structure and guardrails.
+- Is prepared to perform code edits, reviews, or documentation updates under the specified ruleset.
+- Maintains awareness of approval requirements and security boundaries.

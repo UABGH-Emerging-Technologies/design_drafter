@@ -35,19 +35,29 @@ For development:
 python3 -m pip install -e ".[dev]"
 ```
 
-### 2. Running the App
+### 2. Running the Apps
 
-Start the Gradio UI:
+Start the Gradio/LLM backend:
 
 ```bash
-python app/gradio_app.py
+uvicorn gradio_app:app --reload
 ```
 
-Or the Streamlit UI:
+Or, if you prefer Streamlit:
 
 ```bash
 python app/streamlit_app.py
 ```
+
+Launch the TypeScript/Next.js frontend (now located at `app/frontend`):
+
+```bash
+cd app/frontend
+npm install
+NEXT_PUBLIC_GRADIO_API_BASE=http://localhost:7860 npm run dev
+```
+
+The VS Code devcontainer/Docker flow will automatically spin up both the Gradio API (port 7860) and the production Next.js server (port 3000).
 
 ### 3. Chat-Based UML Revision Workflow
 

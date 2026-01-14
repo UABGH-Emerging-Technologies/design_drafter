@@ -1,35 +1,54 @@
 'use server'
-import { diagramTemplates } from '@/constants'
-import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY!)
-const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' })
+/**
+ * Calls the backend API to generate UML diagram.
+ * Returns: { plantuml_code: string, image_base64: string, image_url: string, status: string, message: string }
+ */
+const API_BASE_URL =
+	process.env.NEXT_PUBLIC_GRADIO_API_BASE?.replace(/\/$/, '') ?? 'http://localhost:7860'
 
 export async function generateUMLAction(
 	description: string,
 	diagramType: string,
-) {
-	const prompt = `Generate ${diagramType} PlantUML code for the following story: ${description}. Return only the UML code, no additional text, no markdown or explanations. Learn updated syntax from the following diagram templates: ${JSON.stringify(
-		diagramTemplates,
-	)}`
-
+	theme?: string,
+	code?: string
+): Promise<{
+	plantuml_code: string | null,
+	image_base64: string | null,
+	image_url: string | null,
+	status: string,
+	message: string
+}> {
 	try {
-		const result = await model.generateContent(prompt)
-		const responseText = result.response.text()
-		const umlCode = extractPlantUMLCode(responseText) // Extract PlantUML code
-		return umlCode
-	} catch (error) {
-		console.error(error)
-		throw error
+		const response = await fetch(`${API_BASE_URL}/api/generate`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				description,
+				diagram_type: diagramType,
+				theme,
+				code,
+			}),
+		});
+		if (!response.ok) {
+			const errorText = await response.text();
+			throw new Error(`API error: ${response.status} - ${errorText}`);
+		}
+		const data = await response.json();
+		if (data.status !== 'ok') {
+			throw new Error(data.message || 'Unknown error from backend');
+		}
+		return data;
+	} catch (error: any) {
+		console.error('UML generation error:', error);
+		return {
+			plantuml_code: null,
+			image_base64: null,
+			image_url: null,
+			status: 'error',
+			message: error.message || 'Failed to generate UML diagram',
+		};
 	}
-}
-
-// Function to extract PlantUML code from the response sometimes the response is not in the correct format
-function extractPlantUMLCode(responseText: string) {
-	const plantUMLRegex = /```plantuml([\s\S]*?)```/ // Regex to match PlantUML code blocks
-	const match = responseText.match(plantUMLRegex)
-	if (match && match[1]) {
-		return match[1].trim() // Return the extracted PlantUML code
-	}
-	return null // Return null if no PlantUML code is found
 }

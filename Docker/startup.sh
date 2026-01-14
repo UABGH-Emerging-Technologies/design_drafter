@@ -1,20 +1,52 @@
 #!/bin/bash
-# Install uv globally first
+# Install uv globally first (Python package manager)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-make venv
+# Ensure Python venv is created (idempotent)
+if [ ! -d "/workspaces/design_drafter/.venv" ]; then
+    make venv
+fi
 
-# Auto-activate the venv for new shells
-echo 'source /workspaces/Design_Drafter/.venv/bin/activate' >> /home/vscode/.bashrc
-echo 'source /workspaces/Design_Drafter/.venv/bin/activate' >> /home/vscode/.zshrc
+# Check for npm and install Node dependencies (fail fast if missing)
+if ! command -v npm &> /dev/null; then
+    echo "npm not found. Node.js should be installed via devcontainer config (NODE_VERSION=18)."
+    exit 1
+fi
 
-# Set PYTHONPATH for local modules
-echo 'export PYTHONPATH="/workspaces/Design_Drafter/llm_utils:${PYTHONPATH}"' >> ~/.profile
+# Install/update Node/TypeScript dependencies for frontend
+REPO_DIR="/workspaces/design_drafter"
+FRONTEND_DIR="${REPO_DIR}/app/frontend"
+cd "$FRONTEND_DIR" && npm install
 
-# MLFlow setup
-export MLFLOW_TRACKING_URI="http://138.26.48.232:5000/"
+# Build the production Next.js bundle required by `npm start`
+if ! npm run build; then
+    echo "Next.js build failed; see errors above."
+    exit 1
+fi
 
-# Now, start the Gradio app
-# us relative path from project root
-source .venv/bin/activate && \
-    python gradio_app.py
+# Auto-activate the venv for new shells (append to shell rc files)
+echo 'source /workspaces/design_drafter/.venv/bin/activate' >> /home/vscode/.bashrc
+echo 'source /workspaces/design_drafter/.venv/bin/activate' >> /home/vscode/.zshrc
+
+# Set PYTHONPATH for local modules (for Python import resolution)
+echo 'export PYTHONPATH="/workspaces/design_drafter/llm_utils:${PYTHONPATH}"' >> ~/.profile
+
+# MLFlow setup (tracking URI for MLFlow experiments)
+#export MLFLOW_TRACKING_URI="http://localhost:5000/"
+
+# Start the Gradio API (background) and TypeScript app
+if [ -f "/workspaces/design_drafter/.venv/bin/activate" ]; then
+    source /workspaces/design_drafter/.venv/bin/activate
+else
+    echo "Python virtualenv not found at /workspaces/design_drafter/.venv/bin/activate"
+    exit 1
+fi
+
+# Launch the Gradio API backend
+export NEXT_PUBLIC_GRADIO_API_BASE="http://127.0.0.1:7860"
+cd "$REPO_DIR"
+uvicorn gradio_app:app --host 0.0.0.0 --port 7860 &
+GRADIO_PID=$!
+echo "Started Gradio backend (PID $GRADIO_PID)"
+
+cd "$FRONTEND_DIR" && exec npm start

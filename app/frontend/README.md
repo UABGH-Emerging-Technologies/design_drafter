@@ -31,6 +31,12 @@ npm install
 
 ## Usage
 
+Set the backend API base (defaults to `http://localhost:7860` when unset):
+
+```bash
+export NEXT_PUBLIC_GRADIO_API_BASE=http://localhost:7860
+```
+
 Start the development server:
 
 ```bash
@@ -41,8 +47,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## API Endpoints
 
-- `POST /api/generate-uml` - Accepts a story as input and returns the generated
-  UML code.
+- `POST /api/generate` - Accepts a textual description plus diagram metadata
+  and returns PlantUML plus rendered images from the Gradio backend.
 
 ## Technologies Used
 
