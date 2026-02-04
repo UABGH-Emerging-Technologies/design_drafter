@@ -44,12 +44,6 @@ Start the Gradio/LLM backend:
 uvicorn gradio_app:app --reload
 ```
 
-Or, if you prefer Streamlit:
-
-```bash
-python app/streamlit_app.py
-```
-
 Launch the TypeScript/Next.js frontend (now located at `app/frontend`):
 
 ```bash
