@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://sites.uab.edu/periop-datascience/llm_utils/aiweb_common/fastapi/schemas.html" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Schemas - UMLBot</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Schemas";
+        var mkdocs_page_input_path = "llm_utils/aiweb_common/fastapi/schemas.md";
+        var mkdocs_page_url = "/periop-datascience/llm_utils/aiweb_common/fastapi/schemas.html";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../index.html" class="icon icon-home"> UMLBot
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../tests/index.html">Tests</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">UMLBot</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot/__init__.html">Package Init</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot/api_server.html">API Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot/exceptions.html">Exceptions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot/llm_interface.html">LLM Interface</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot/uml_draft_handler.html">UML Draft Handler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Services</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../UMLBot/services/__init__.html">Init</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../UMLBot/services/diagram_service.html">Diagram Service</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Utils</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../UMLBot/utils/plantuml_extractor.html">PlantUML Extractor</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Config</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../UMLBot/config/__init__.html">Init</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../UMLBot/config/config.html">Config</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot_streamlit_app.html">User Interface</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">llm_utils</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Fast API</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="helper_apis.html">Helper APIS</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Schemas</a>
+    <ul class="current">
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="validators.html">Validators</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >File Operations</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../file_operations/docx_creator.html">Docx Creator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../file_operations/file_config.html">File Config</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../file_operations/file_handling.html">File Handling</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../file_operations/text_format.html">Text Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../file_operations/upload_manager.html">Upload Manager</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Resource</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../resource/default_resource_config.html">Default Resource Config</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../resource/NIHRePORTERInterface.html">NIH RePORTER Interface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../resource/PubMedInterface.html">PubMed Interface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../resource/PubMedQuery.html">PubMed Query</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Streamlit</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../streamlit/BYOKLogin.html">Bring Your Own Key (BYOK)</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../streamlit/streamlit_common.html">Streamlit Common</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ObjectFactory.html">Object Factory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../WorkflowHandler.html">Workflow Handler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Generate</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/AugmentedResponse.html">AugmentedResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/AugmentedServicer.html">AugmentedServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/ChatResponse.html">ChatResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/ChatSchemas.html">ChatSchemas</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/ChatServicer.html">ChatServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/PromptAssembler.html">PromptAssembler</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/PromptyResponseHandler.html">PromptyResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/PromptyServicer.html">PromptyServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/QueryInterface.html">QueryInterface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/Response.html">Response</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/SingleResponse.html">SingleResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate/SingleResponseServicer.html">SingleResponseServicer</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">UMLBot</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html" class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">llm_utils</li>
+          <li class="breadcrumb-item">Fast API</li>
+      <li class="breadcrumb-item active">Schemas</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/uabperiopai/edit/master/llm_utils/docs/aiweb_common/fastapi/schemas.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <div class="doc doc-object doc-module">
+
+
+
+<a id="aiweb_common.fastapi.schemas"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="aiweb_common.fastapi.schemas.BibTexResponse" class="doc doc-heading">
+            <code>BibTexResponse</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+
+        <p>This class represents a response in BibTeX format.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>llm_utils/aiweb_common/fastapi/schemas.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BibTexResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class represents a response in BibTeX format.&quot;&quot;&quot;</span>
+
+    <span class="n">encoded_docx</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base64-encoded BIB file. Decode to obtain the BIB file.&quot;</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="aiweb_common.fastapi.schemas.JSONResponse" class="doc doc-heading">
+            <code>JSONResponse</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+
+        <p>This class represents a response containing JSON data in a base64-encoded string.
+Decode this string to obtain the original JSON content.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>llm_utils/aiweb_common/fastapi/schemas.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">JSONResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents a response containing JSON data in a base64-encoded string.</span>
+<span class="sd">    Decode this string to obtain the original JSON content.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">encoded_json</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base64-encoded JSON data. Decode to obtain the JSON file.&quot;</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="aiweb_common.fastapi.schemas.MSExcelResponse" class="doc doc-heading">
+            <code>MSExcelResponse</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+
+        <p>This class likely represents a response from an API that interacts with Microsoft Excel files.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>llm_utils/aiweb_common/fastapi/schemas.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MSExcelResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class likely represents a response from an API that interacts with Microsoft Excel files.&quot;&quot;&quot;</span>
+
+    <span class="n">encoded_xlsx</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base64-encoded XLSX file. Decode to obtain the XLSX file.&quot;</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="aiweb_common.fastapi.schemas.MSWordResponse" class="doc doc-heading">
+            <code>MSWordResponse</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+
+        <p>This class likely represents a response from a Microsoft Word document.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>llm_utils/aiweb_common/fastapi/schemas.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MSWordResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class likely represents a response from a Microsoft Word document.&quot;&quot;&quot;</span>
+
+    <span class="n">encoded_docx</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base64-encoded DOCX file. Decode to obtain the DOCX file.&quot;</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="aiweb_common.fastapi.schemas.SearchRequest" class="doc doc-heading">
+            <code>SearchRequest</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+
+        <p>This class represents a search request in Python.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>llm_utils/aiweb_common/fastapi/schemas.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SearchRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class represents a search request in Python.&quot;&quot;&quot;</span>
+
+    <span class="n">research_question</span><span class="p">:</span> <span class="nb">str</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="aiweb_common.fastapi.schemas.UploadableFiles" class="doc doc-heading">
+            <code>UploadableFiles</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="str">str</span></code>, <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+        <p>The class <code>UploadableFiles</code> is a subclass of <code>str</code> and <code>Enum</code> in Python.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>llm_utils/aiweb_common/fastapi/schemas.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">UploadableFiles</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The class `UploadableFiles` is a subclass of `str` and `Enum` in Python.&quot;&quot;&quot;</span>
+
+    <span class="n">DOCX</span> <span class="o">=</span> <span class="s2">&quot;.docx&quot;</span>
+    <span class="n">XLSX</span> <span class="o">=</span> <span class="s2">&quot;.xlsx&quot;</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="aiweb_common.fastapi.schemas.XLSXinRequest" class="doc doc-heading">
+            <code>XLSXinRequest</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+
+        <p>This class likely represents a request object for handling XLSX file data in a Python application.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>llm_utils/aiweb_common/fastapi/schemas.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">XLSXinRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class likely represents a request object for handling XLSX file data in a Python application.&quot;&quot;&quot;</span>
+
+    <span class="n">xlsx_encoded</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base64-encoded XLSX file content.&quot;</span><span class="p">)</span>
+
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;xlsx_encoded&quot;</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_mime_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The function `check_mime_type` validates XLSX file bytes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          cls: In the provided code snippet, the `cls` parameter is typically used to refer to the class</span>
+<span class="sd">        itself within a class method. It is a common convention in Python to use `cls` as the first</span>
+<span class="sd">        parameter in class methods to represent the class object.</span>
+<span class="sd">          v: The `v` parameter in the `check_mime_type` function likely represents the value that needs</span>
+<span class="sd">        to be validated or checked for its MIME type. It is passed as an argument to the function when</span>
+<span class="sd">        it is called.</span>
+<span class="sd">          values: The `values` parameter typically refers to a dictionary containing all the values</span>
+<span class="sd">        being passed to the function or method. In this context, it is likely used to pass additional</span>
+<span class="sd">        information or context to the `check_mime_type` function.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">          The `check_mime_type` function is returning the result of calling the `validate_xlsx_bytes`</span>
+<span class="sd">        function with the arguments `cls`, `v`, and `values`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">validate_xlsx_bytes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="aiweb_common.fastapi.schemas.XLSXinRequest.check_mime_type" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">check_mime_type</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The function <code>check_mime_type</code> validates XLSX file bytes.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>cls</code></b>
+              –
+              <div class="doc-md-description">
+                <p>In the provided code snippet, the <code>cls</code> parameter is typically used to refer to the class</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>        <p>itself within a class method. It is a common convention in Python to use <code>cls</code> as the first
+parameter in class methods to represent the class object.
+  v: The <code>v</code> parameter in the <code>check_mime_type</code> function likely represents the value that needs
+to be validated or checked for its MIME type. It is passed as an argument to the function when
+it is called.
+  values: The <code>values</code> parameter typically refers to a dictionary containing all the values
+being passed to the function or method. In this context, it is likely used to pass additional
+information or context to the <code>check_mime_type</code> function.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>The <code>check_mime_type</code> function is returning the result of calling the <code>validate_xlsx_bytes</code></p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>        <p>function with the arguments <code>cls</code>, <code>v</code>, and <code>values</code>.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>llm_utils/aiweb_common/fastapi/schemas.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;xlsx_encoded&quot;</span><span class="p">)</span>
+<span class="nd">@classmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_mime_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The function `check_mime_type` validates XLSX file bytes.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      cls: In the provided code snippet, the `cls` parameter is typically used to refer to the class</span>
+<span class="sd">    itself within a class method. It is a common convention in Python to use `cls` as the first</span>
+<span class="sd">    parameter in class methods to represent the class object.</span>
+<span class="sd">      v: The `v` parameter in the `check_mime_type` function likely represents the value that needs</span>
+<span class="sd">    to be validated or checked for its MIME type. It is passed as an argument to the function when</span>
+<span class="sd">    it is called.</span>
+<span class="sd">      values: The `values` parameter typically refers to a dictionary containing all the values</span>
+<span class="sd">    being passed to the function or method. In this context, it is likely used to pass additional</span>
+<span class="sd">    information or context to the `check_mime_type` function.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      The `check_mime_type` function is returning the result of calling the `validate_xlsx_bytes`</span>
+<span class="sd">    function with the arguments `cls`, `v`, and `values`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">validate_xlsx_bytes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="helper_apis.html" class="btn btn-neutral float-left" title="Helper APIS"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="validators.html" class="btn btn-neutral float-right" title="Validators">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/uabperiopai" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="helper_apis.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="validators.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

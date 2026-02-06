@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://sites.uab.edu/periop-datascience/UMLBot/uml_draft_handler.html" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>UML Draft Handler - UMLBot</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "UML Draft Handler";
+        var mkdocs_page_input_path = "UMLBot/uml_draft_handler.md";
+        var mkdocs_page_url = "/periop-datascience/UMLBot/uml_draft_handler.html";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../index.html" class="icon icon-home"> UMLBot
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tests/index.html">Tests</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">UMLBot</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="__init__.html">Package Init</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="api_server.html">API Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="llm_interface.html">LLM Interface</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">UML Draft Handler</a>
+    <ul class="current">
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Services</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="services/__init__.html">Init</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="services/diagram_service.html">Diagram Service</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Utils</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="utils/plantuml_extractor.html">PlantUML Extractor</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Config</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="config/__init__.html">Init</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="config/config.html">Config</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../UMLBot_streamlit_app.html">User Interface</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">llm_utils</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../llm_utils/index.html">Home</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Fast API</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/fastapi/helper_apis.html">Helper APIS</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/fastapi/schemas.html">Schemas</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/fastapi/validators.html">Validators</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >File Operations</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/file_operations/docx_creator.html">Docx Creator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/file_operations/file_config.html">File Config</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/file_operations/file_handling.html">File Handling</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/file_operations/text_format.html">Text Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/file_operations/upload_manager.html">Upload Manager</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Resource</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/resource/default_resource_config.html">Default Resource Config</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/resource/NIHRePORTERInterface.html">NIH RePORTER Interface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/resource/PubMedInterface.html">PubMed Interface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/resource/PubMedQuery.html">PubMed Query</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Streamlit</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/streamlit/BYOKLogin.html">Bring Your Own Key (BYOK)</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/streamlit/streamlit_common.html">Streamlit Common</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../llm_utils/aiweb_common/ObjectFactory.html">Object Factory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../llm_utils/aiweb_common/WorkflowHandler.html">Workflow Handler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Generate</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/AugmentedResponse.html">AugmentedResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/AugmentedServicer.html">AugmentedServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/ChatResponse.html">ChatResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/ChatSchemas.html">ChatSchemas</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/ChatServicer.html">ChatServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/PromptAssembler.html">PromptAssembler</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/PromptyResponseHandler.html">PromptyResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/PromptyServicer.html">PromptyServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/QueryInterface.html">QueryInterface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/Response.html">Response</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/SingleResponse.html">SingleResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../llm_utils/aiweb_common/generate/SingleResponseServicer.html">SingleResponseServicer</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">UMLBot</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html" class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">UMLBot</li>
+      <li class="breadcrumb-item active">UML Draft Handler</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/uabperiopai/edit/master/docs/UMLBot/uml_draft_handler.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <div class="doc doc-object doc-module">
+
+
+
+<a id="UMLBot.uml_draft_handler"></a>
+    <div class="doc doc-contents first">
+
+        <p>UMLDraftHandler: Handles UML diagram generation via LLM using prompty template.</p>
+<p>Refactored to inherit WorkflowHandler and provide methods for:
+- Loading prompty file
+- Constructing prompt with required variables
+- Generating diagram (LLM call, error handling)</p>
+<p>No UI/Gradio code.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="UMLBot.uml_draft_handler.UMLDraftHandler" class="doc doc-heading">
+            <code>UMLDraftHandler</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="llm_utils.aiweb_common.WorkflowHandler.WorkflowHandler">WorkflowHandler</span></code></p>
+
+
+
+        <p>Handler for generating UML diagrams using an LLM and a prompty template.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Attributes:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>prompty_path</code></b>
+                  (<code><span title="pathlib.Path">Path</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Path to the prompty file.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">UMLDraftHandler</span><span class="p">(</span><span class="n">WorkflowHandler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handler for generating UML diagrams using an LLM and a prompty template.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        prompty_path (Path): Path to the prompty file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UMLBotConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the handler with optional configuration overrides.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompty_path</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;assets&quot;</span> <span class="o">/</span> <span class="s2">&quot;uml_diagram.prompty&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">UMLBotConfig</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_prompt_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validates a UML prompt template for required placeholders and syntax.</span>
+
+<span class="sd">        This validator fully separates Python `.format()` style (`{name}`) and Jinja2 style (`{{ name }}` or `{% block %}`) placeholders.</span>
+<span class="sd">        It does not flag valid Jinja2 constructs as malformed Python placeholders.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            template (str): The prompt template string to validate.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If required placeholders are missing, curly braces/tags are unbalanced,</span>
+<span class="sd">                or placeholders/tags are malformed.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Python `.format()` style:</span>
+<span class="sd">                &quot;Generate a {diagram_type} diagram for: {description} {theme}&quot;</span>
+
+<span class="sd">            Jinja2 style:</span>
+<span class="sd">                &quot;Generate a {{ diagram_type }} diagram for: {{ description }} {% if theme %}Theme: {{ theme }}{% endif %}&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+        <span class="c1"># Remove all Jinja2 tags for Python-style validation</span>
+        <span class="n">jinja2_tag_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(\{\{.*?\}\}|\{%.*?%\})&quot;</span>
+        <span class="n">template_no_jinja2</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">jinja2_tag_pattern</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+
+        <span class="c1"># 1. Python-style placeholder validation (only on non-Jinja2 content)</span>
+        <span class="n">py_placeholder_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\{([a-zA-Z_][a-zA-Z0-9_]*)\}&quot;</span>
+        <span class="n">py_placeholders</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">py_placeholder_pattern</span><span class="p">,</span> <span class="n">template_no_jinja2</span><span class="p">))</span>
+
+        <span class="c1"># Malformed Python-style: empty {}, non-identifier, or unclosed</span>
+        <span class="n">malformed_py</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\{\s*\}&quot;</span><span class="p">,</span> <span class="n">template_no_jinja2</span><span class="p">):</span>
+            <span class="n">malformed_py</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Empty Python-style placeholder&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\{[^a-zA-Z_][^}]*\}&quot;</span><span class="p">,</span> <span class="n">template_no_jinja2</span><span class="p">):</span>
+            <span class="n">malformed_py</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Malformed Python-style placeholder&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">template_no_jinja2</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">template_no_jinja2</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">):</span>
+            <span class="n">malformed_py</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Unbalanced curly braces in Python-style section&quot;</span><span class="p">)</span>
+
+        <span class="c1"># 2. Jinja2-style placeholder validation (only on Jinja2 tags)</span>
+        <span class="n">jinja2_var_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\{\{\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\}\}&quot;</span>
+        <span class="n">jinja2_placeholders</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">jinja2_var_pattern</span><span class="p">,</span> <span class="n">template</span><span class="p">))</span>
+        <span class="n">jinja2_block_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\{%\s*([a-zA-Z_][a-zA-Z0-9_ ]*)\s*%\}&quot;</span>
+        <span class="n">jinja2_blocks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">jinja2_block_pattern</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+
+        <span class="c1"># Malformed Jinja2: unclosed or incomplete tags</span>
+        <span class="n">malformed_jinja2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\{\{[^\}]*$&quot;</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span> <span class="ow">or</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\{%[^\}]*$&quot;</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+            <span class="n">malformed_jinja2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Unclosed Jinja2 tag&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">template</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;{{&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">template</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;}}&quot;</span><span class="p">):</span>
+            <span class="n">malformed_jinja2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Unbalanced Jinja2 variable tags&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">template</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;{%&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">template</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;%}&quot;</span><span class="p">):</span>
+            <span class="n">malformed_jinja2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Unbalanced Jinja2 block tags&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">malformed_py</span> <span class="ow">or</span> <span class="n">malformed_jinja2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Malformed placeholder(s) found: </span><span class="si">{</span><span class="n">malformed_jinja2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">malformed_py</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># 3. Required placeholders (must be present in either style)</span>
+        <span class="n">all_placeholders</span> <span class="o">=</span> <span class="n">py_placeholders</span> <span class="o">|</span> <span class="n">jinja2_placeholders</span>
+        <span class="n">required</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;diagram_type&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">}</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">required</span> <span class="o">-</span> <span class="n">all_placeholders</span>
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Missing required placeholder(s): </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="s2">&quot;Required placeholders must be present in either Python `.format()` (</span><span class="si">{name}</span><span class="s2">) or Jinja2 ({{ name }}) style.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># 4. If &#39;theme&#39; is referenced, ensure it&#39;s a valid placeholder in either style</span>
+        <span class="n">theme_referenced</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;theme&quot;</span> <span class="ow">in</span> <span class="n">template</span>
+            <span class="ow">or</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\{\{\s*theme\s*\}\}&quot;</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\{theme\}&quot;</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">theme_present</span> <span class="o">=</span> <span class="s2">&quot;theme&quot;</span> <span class="ow">in</span> <span class="n">all_placeholders</span>
+        <span class="k">if</span> <span class="n">theme_referenced</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">theme_present</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Template references &#39;theme&#39; but does not use a valid &#39;</span><span class="si">{theme}</span><span class="s2">&#39; or &#39;{{ theme }}&#39; placeholder.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># All checks passed</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">construct_prompt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">diagram_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">theme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads the prompty template and constructs the prompt with provided variables.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            diagram_type (str): Type of UML diagram to generate.</span>
+<span class="sd">            description (str): Description of the system/process to diagram.</span>
+<span class="sd">            theme (Optional[str]): PlantUML theme/style.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ChatPromptTemplate: Assembled prompt template ready for LLM invocation.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: If prompty file is missing.</span>
+<span class="sd">            ValueError: If prompty file is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prompt_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_prompty</span><span class="p">()</span>
+        <span class="c1"># Ensure prompt_template is a ChatPromptTemplate and validate its template</span>
+        <span class="c1"># Skipping prompt template validation for now:</span>
+        <span class="c1"># if hasattr(self, &quot;_validate_prompt_template&quot;):</span>
+        <span class="c1">#     self._validate_prompt_template(prompt_template.template)</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;diagram_type&quot;</span><span class="p">:</span> <span class="n">escape_curly_braces</span><span class="p">(</span><span class="n">diagram_type</span><span class="p">),</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">escape_curly_braces</span><span class="p">(</span><span class="n">description</span><span class="p">),</span>
+            <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="n">escape_curly_braces</span><span class="p">(</span><span class="n">theme</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">prompt_template</span><span class="o">.</span><span class="n">format_prompt</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">diagram_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">theme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">llm_interface</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">retry_manager</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;UMLRetryManager&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a UML diagram using the LLM and prompty template, with error handling and retry logic.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            diagram_type (str): Type of UML diagram to generate.</span>
+<span class="sd">            description (str): Description of the system/process to diagram.</span>
+<span class="sd">            theme (Optional[str]): PlantUML theme/style.</span>
+<span class="sd">            llm_interface: Optional LLM interface for invocation (must have .invoke()).</span>
+<span class="sd">            retry_manager (Optional[UMLRetryManager]): Helper for tracking retries and error context.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: PlantUML diagram code.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If all retries fail, with error context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">retry_manager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">retry_manager</span> <span class="o">=</span> <span class="n">UMLRetryManager</span><span class="p">(</span><span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">retry_manager</span><span class="o">.</span><span class="n">should_retry</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_prompt</span><span class="p">(</span><span class="n">diagram_type</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">theme</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">llm_interface</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;LLM interface must be provided for diagram generation.&quot;</span><span class="p">)</span>
+                <span class="c1"># Extract messages if present (Langchain ChatPromptValue)</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="s2">&quot;to_messages&quot;</span><span class="p">):</span>
+                    <span class="n">messages</span> <span class="o">=</span> <span class="n">prompt</span><span class="o">.</span><span class="n">to_messages</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">messages</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;content&quot;</span><span class="p">):</span>
+                        <span class="n">prompt_input</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">prompt_input</span> <span class="o">=</span> <span class="n">messages</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="s2">&quot;messages&quot;</span><span class="p">):</span>
+                    <span class="n">messages</span> <span class="o">=</span> <span class="n">prompt</span><span class="o">.</span><span class="n">messages</span>
+                    <span class="k">if</span> <span class="n">messages</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;content&quot;</span><span class="p">):</span>
+                        <span class="n">prompt_input</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">prompt_input</span> <span class="o">=</span> <span class="n">messages</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">prompt_input</span> <span class="o">=</span> <span class="n">prompt</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Prompt is not a recognized type for LLM input.&quot;</span><span class="p">)</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">llm_interface</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">prompt_input</span><span class="p">)</span>
+                <span class="n">diagram_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_content_type</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">diagram_code</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">retry_manager</span><span class="o">.</span><span class="n">record_error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                    <span class="s2">&quot;UML diagram generation failed (attempt </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">retry_manager</span><span class="o">.</span><span class="n">attempt</span>
+                <span class="p">)</span>
+        <span class="c1"># After max retries, raise with error context</span>
+        <span class="n">error_msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;UML diagram generation failed after </span><span class="si">{</span><span class="n">retry_manager</span><span class="o">.</span><span class="n">max_retries</span><span class="si">}</span><span class="s2"> attempts.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Error context:</span><span class="se">\n</span><span class="si">{</span><span class="n">retry_manager</span><span class="o">.</span><span class="n">error_context</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="UMLBot.uml_draft_handler.UMLDraftHandler.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the handler with optional configuration overrides.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UMLBotConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the handler with optional configuration overrides.&quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">prompty_path</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;assets&quot;</span> <span class="o">/</span> <span class="s2">&quot;uml_diagram.prompty&quot;</span>
+    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">UMLBotConfig</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="UMLBot.uml_draft_handler.UMLDraftHandler.construct_prompt" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">construct_prompt</span><span class="p">(</span><span class="n">diagram_type</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Loads the prompty template and constructs the prompt with provided variables.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>diagram_type</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Type of UML diagram to generate.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>description</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Description of the system/process to diagram.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>theme</code></b>
+                  (<code><span title="typing.Optional">Optional</span>[<span title="str">str</span>]</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>PlantUML theme/style.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>ChatPromptTemplate</code></b>(                  <code><span title="typing.Any">Any</span></code>
+)              –
+              <div class="doc-md-description">
+                <p>Assembled prompt template ready for LLM invocation.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="FileNotFoundError">FileNotFoundError</span></code>
+              –
+              <div class="doc-md-description">
+                <p>If prompty file is missing.</p>
+              </div>
+            </li>
+            <li>
+                  <code><span title="ValueError">ValueError</span></code>
+              –
+              <div class="doc-md-description">
+                <p>If prompty file is invalid.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">construct_prompt</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">diagram_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">theme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the prompty template and constructs the prompt with provided variables.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        diagram_type (str): Type of UML diagram to generate.</span>
+<span class="sd">        description (str): Description of the system/process to diagram.</span>
+<span class="sd">        theme (Optional[str]): PlantUML theme/style.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ChatPromptTemplate: Assembled prompt template ready for LLM invocation.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If prompty file is missing.</span>
+<span class="sd">        ValueError: If prompty file is invalid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">prompt_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_prompty</span><span class="p">()</span>
+    <span class="c1"># Ensure prompt_template is a ChatPromptTemplate and validate its template</span>
+    <span class="c1"># Skipping prompt template validation for now:</span>
+    <span class="c1"># if hasattr(self, &quot;_validate_prompt_template&quot;):</span>
+    <span class="c1">#     self._validate_prompt_template(prompt_template.template)</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;diagram_type&quot;</span><span class="p">:</span> <span class="n">escape_curly_braces</span><span class="p">(</span><span class="n">diagram_type</span><span class="p">),</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">escape_curly_braces</span><span class="p">(</span><span class="n">description</span><span class="p">),</span>
+        <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="n">escape_curly_braces</span><span class="p">(</span><span class="n">theme</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">prompt_template</span><span class="o">.</span><span class="n">format_prompt</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="UMLBot.uml_draft_handler.UMLDraftHandler.process" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">process</span><span class="p">(</span><span class="n">diagram_type</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">llm_interface</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">retry_manager</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Generates a UML diagram using the LLM and prompty template, with error handling and retry logic.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>diagram_type</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Type of UML diagram to generate.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>description</code></b>
+                  (<code><span title="str">str</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Description of the system/process to diagram.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>theme</code></b>
+                  (<code><span title="typing.Optional">Optional</span>[<span title="str">str</span>]</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>PlantUML theme/style.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>llm_interface</code></b>
+                  (<code><span title="typing.Optional">Optional</span>[<span title="typing.Any">Any</span>]</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Optional LLM interface for invocation (must have .invoke()).</p>
+              </div>
+            </li>
+            <li>
+              <b><code>retry_manager</code></b>
+                  (<code><span title="typing.Optional">Optional</span>[<a class="autorefs autorefs-internal" title="UMLRetryManager (UMLBot.uml_draft_handler.UMLRetryManager)" href="#UMLBot.uml_draft_handler.UMLRetryManager">UMLRetryManager</a>]</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>Helper for tracking retries and error context.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+<b><code>str</code></b>(                  <code><span title="str">str</span></code>
+)              –
+              <div class="doc-md-description">
+                <p>PlantUML diagram code.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Raises:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code><span title="RuntimeError">RuntimeError</span></code>
+              –
+              <div class="doc-md-description">
+                <p>If all retries fail, with error context.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">diagram_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">theme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">llm_interface</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">retry_manager</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;UMLRetryManager&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a UML diagram using the LLM and prompty template, with error handling and retry logic.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        diagram_type (str): Type of UML diagram to generate.</span>
+<span class="sd">        description (str): Description of the system/process to diagram.</span>
+<span class="sd">        theme (Optional[str]): PlantUML theme/style.</span>
+<span class="sd">        llm_interface: Optional LLM interface for invocation (must have .invoke()).</span>
+<span class="sd">        retry_manager (Optional[UMLRetryManager]): Helper for tracking retries and error context.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: PlantUML diagram code.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If all retries fail, with error context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">retry_manager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">retry_manager</span> <span class="o">=</span> <span class="n">UMLRetryManager</span><span class="p">(</span><span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">retry_manager</span><span class="o">.</span><span class="n">should_retry</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_prompt</span><span class="p">(</span><span class="n">diagram_type</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">theme</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">llm_interface</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;LLM interface must be provided for diagram generation.&quot;</span><span class="p">)</span>
+            <span class="c1"># Extract messages if present (Langchain ChatPromptValue)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="s2">&quot;to_messages&quot;</span><span class="p">):</span>
+                <span class="n">messages</span> <span class="o">=</span> <span class="n">prompt</span><span class="o">.</span><span class="n">to_messages</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">messages</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;content&quot;</span><span class="p">):</span>
+                    <span class="n">prompt_input</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">prompt_input</span> <span class="o">=</span> <span class="n">messages</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="s2">&quot;messages&quot;</span><span class="p">):</span>
+                <span class="n">messages</span> <span class="o">=</span> <span class="n">prompt</span><span class="o">.</span><span class="n">messages</span>
+                <span class="k">if</span> <span class="n">messages</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;content&quot;</span><span class="p">):</span>
+                    <span class="n">prompt_input</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">prompt_input</span> <span class="o">=</span> <span class="n">messages</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">prompt_input</span> <span class="o">=</span> <span class="n">prompt</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Prompt is not a recognized type for LLM input.&quot;</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">llm_interface</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">prompt_input</span><span class="p">)</span>
+            <span class="n">diagram_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_content_type</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">diagram_code</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">retry_manager</span><span class="o">.</span><span class="n">record_error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="s2">&quot;UML diagram generation failed (attempt </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">retry_manager</span><span class="o">.</span><span class="n">attempt</span>
+            <span class="p">)</span>
+    <span class="c1"># After max retries, raise with error context</span>
+    <span class="n">error_msg</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;UML diagram generation failed after </span><span class="si">{</span><span class="n">retry_manager</span><span class="o">.</span><span class="n">max_retries</span><span class="si">}</span><span class="s2"> attempts.</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Error context:</span><span class="se">\n</span><span class="si">{</span><span class="n">retry_manager</span><span class="o">.</span><span class="n">error_context</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="UMLBot.uml_draft_handler.UMLRetryManager" class="doc doc-heading">
+            <code>UMLRetryManager</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Tracks retry count and error context for UML rendering attempts.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Attributes:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>max_retries</code></b>
+                  (<code><span title="int">int</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Maximum number of retries allowed.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>attempt</code></b>
+                  (<code><span title="int">int</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>Current attempt number.</p>
+              </div>
+            </li>
+            <li>
+              <b><code>errors</code></b>
+                  (<code><span title="list">list</span>[<span title="str">str</span>]</code>)
+              –
+              <div class="doc-md-description">
+                <p>List of error messages from each failed attempt.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">UMLRetryManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tracks retry count and error context for UML rendering attempts.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        max_retries (int): Maximum number of retries allowed.</span>
+<span class="sd">        attempt (int): Current attempt number.</span>
+<span class="sd">        errors (list[str]): List of error messages from each failed attempt.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the retry manager with a maximum retry count.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">max_retries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attempt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">record_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Record an error and increment the attempt counter.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attempt</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">should_retry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True when another retry attempt is allowed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">attempt</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retries</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">last_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the most recent error message, or empty string if none.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">error_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a multi-line summary of attempts and errors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="UMLBot.uml_draft_handler.UMLRetryManager.__init__" class="doc doc-heading">
+            <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">max_retries</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the retry manager with a maximum retry count.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the retry manager with a maximum retry count.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">max_retries</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">attempt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="UMLBot.uml_draft_handler.UMLRetryManager.error_context" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">error_context</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return a multi-line summary of attempts and errors.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">error_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a multi-line summary of attempts and errors.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="UMLBot.uml_draft_handler.UMLRetryManager.last_error" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">last_error</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return the most recent error message, or empty string if none.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">last_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the most recent error message, or empty string if none.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="UMLBot.uml_draft_handler.UMLRetryManager.record_error" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">record_error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Record an error and increment the attempt counter.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">record_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Record an error and increment the attempt counter.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">attempt</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="UMLBot.uml_draft_handler.UMLRetryManager.should_retry" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">should_retry</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Return True when another retry attempt is allowed.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">should_retry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True when another retry attempt is allowed.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">attempt</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_retries</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="UMLBot.uml_draft_handler.escape_curly_braces" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">escape_curly_braces</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Escapes all curly braces in a string for safe prompt injection.
+Args:
+    val (Optional[str]): Input string.
+Returns:
+    Optional[str]: String with '{' replaced by '{{' and '}' replaced by '}}'.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>UMLBot/uml_draft_handler.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">escape_curly_braces</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Escapes all curly braces in a string for safe prompt injection.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        val (Optional[str]): Input string.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Optional[str]: String with &#39;{&#39; replaced by &#39;{{&#39; and &#39;}&#39; replaced by &#39;}}&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="s2">&quot;{{&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;}}&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="llm_interface.html" class="btn btn-neutral float-left" title="LLM Interface"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="services/__init__.html" class="btn btn-neutral float-right" title="Init">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/uabperiopai" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="llm_interface.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="services/__init__.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://sites.uab.edu/periop-datascience/llm_utils/aiweb_common/generate/AugmentedResponse.html" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>AugmentedResponse - UMLBot</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "AugmentedResponse";
+        var mkdocs_page_input_path = "llm_utils/aiweb_common/generate/AugmentedResponse.md";
+        var mkdocs_page_url = "/periop-datascience/llm_utils/aiweb_common/generate/AugmentedResponse.html";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../../index.html" class="icon icon-home"> UMLBot
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../../tests/index.html">Tests</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">UMLBot</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot/__init__.html">Package Init</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot/api_server.html">API Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot/exceptions.html">Exceptions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot/llm_interface.html">LLM Interface</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot/uml_draft_handler.html">UML Draft Handler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Services</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../UMLBot/services/__init__.html">Init</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../UMLBot/services/diagram_service.html">Diagram Service</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Utils</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../UMLBot/utils/plantuml_extractor.html">PlantUML Extractor</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Config</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../../UMLBot/config/__init__.html">Init</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../../UMLBot/config/config.html">Config</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../UMLBot_streamlit_app.html">User Interface</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">llm_utils</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Fast API</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../fastapi/helper_apis.html">Helper APIS</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../fastapi/schemas.html">Schemas</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../fastapi/validators.html">Validators</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >File Operations</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../file_operations/docx_creator.html">Docx Creator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../file_operations/file_config.html">File Config</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../file_operations/file_handling.html">File Handling</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../file_operations/text_format.html">Text Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../file_operations/upload_manager.html">Upload Manager</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Resource</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../resource/default_resource_config.html">Default Resource Config</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../resource/NIHRePORTERInterface.html">NIH RePORTER Interface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../resource/PubMedInterface.html">PubMed Interface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../resource/PubMedQuery.html">PubMed Query</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Streamlit</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../streamlit/BYOKLogin.html">Bring Your Own Key (BYOK)</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../streamlit/streamlit_common.html">Streamlit Common</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ObjectFactory.html">Object Factory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../WorkflowHandler.html">Workflow Handler</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Generate</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">AugmentedResponse</a>
+    <ul class="current">
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="AugmentedServicer.html">AugmentedServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="ChatResponse.html">ChatResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="ChatSchemas.html">ChatSchemas</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="ChatServicer.html">ChatServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="PromptAssembler.html">PromptAssembler</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="PromptyResponseHandler.html">PromptyResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="PromptyServicer.html">PromptyServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="QueryInterface.html">QueryInterface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="Response.html">Response</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="SingleResponse.html">SingleResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="SingleResponseServicer.html">SingleResponseServicer</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">UMLBot</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html" class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">llm_utils</li>
+          <li class="breadcrumb-item">Generate</li>
+      <li class="breadcrumb-item active">AugmentedResponse</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/uabperiopai/edit/master/llm_utils/docs/aiweb_common/generate/AugmentedResponse.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <div class="doc doc-object doc-module">
+
+
+
+<a id="aiweb_common.generate.AugmentedResponse"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="aiweb_common.generate.AugmentedResponse.AugmentedResponseHandler" class="doc doc-heading">
+            <code>AugmentedResponseHandler</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="aiweb_common.generate.Response.ResponseHandler">ResponseHandler</span></code></p>
+
+
+
+        <p>This Python class <code>AugmentedResponseHandler</code> extends <code>ResponseHandler</code> and
+implements methods for processing input and generating responses using a
+language model service.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>llm_utils/aiweb_common/generate/AugmentedResponse.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">AugmentedResponseHandler</span><span class="p">(</span><span class="n">ResponseHandler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This Python class `AugmentedResponseHandler` extends `ResponseHandler` and</span>
+<span class="sd">    implements methods for processing input and generating responses using a</span>
+<span class="sd">    language model service.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">llm_interface</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">llm_interface</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assembled_prompt</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The function `generate_response` calls a language model to generate a response based</span>
+<span class="sd">        on a given prompt.</span>
+
+<span class="sd">        :param assembled_prompt: It looks like the `generate_response` method is designed to</span>
+<span class="sd">        generate a response using a language model. The `assembled_prompt` parameter likely</span>
+<span class="sd">        contains the input prompt or context that will be used to generate the response</span>
+<span class="sd">        :return: The `generate_response` method returns the response generated by calling the</span>
+<span class="sd">        `generate_langchain_response` method of the `aug_service` object with the</span>
+<span class="sd">        `assembled_prompt` as an argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Focus on the specifics of how to interact with the language model.</span>
+        <span class="c1"># Implement the details of calling the LLM and handling the response.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">aug_service</span><span class="o">.</span><span class="n">generate_langchain_response</span><span class="p">(</span><span class="n">assembled_prompt</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="aiweb_common.generate.AugmentedResponse.AugmentedResponseHandler.generate_response" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">generate_response</span><span class="p">(</span><span class="n">assembled_prompt</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>The function <code>generate_response</code> calls a language model to generate a response based
+on a given prompt.</p>
+<p>:param assembled_prompt: It looks like the <code>generate_response</code> method is designed to
+generate a response using a language model. The <code>assembled_prompt</code> parameter likely
+contains the input prompt or context that will be used to generate the response
+:return: The <code>generate_response</code> method returns the response generated by calling the
+<code>generate_langchain_response</code> method of the <code>aug_service</code> object with the
+<code>assembled_prompt</code> as an argument.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>llm_utils/aiweb_common/generate/AugmentedResponse.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assembled_prompt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The function `generate_response` calls a language model to generate a response based</span>
+<span class="sd">    on a given prompt.</span>
+
+<span class="sd">    :param assembled_prompt: It looks like the `generate_response` method is designed to</span>
+<span class="sd">    generate a response using a language model. The `assembled_prompt` parameter likely</span>
+<span class="sd">    contains the input prompt or context that will be used to generate the response</span>
+<span class="sd">    :return: The `generate_response` method returns the response generated by calling the</span>
+<span class="sd">    `generate_langchain_response` method of the `aug_service` object with the</span>
+<span class="sd">    `assembled_prompt` as an argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Focus on the specifics of how to interact with the language model.</span>
+    <span class="c1"># Implement the details of calling the LLM and handling the response.</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">aug_service</span><span class="o">.</span><span class="n">generate_langchain_response</span><span class="p">(</span><span class="n">assembled_prompt</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="aiweb_common.generate.AugmentedResponse.RAGResponseHandler" class="doc doc-heading">
+            <code>RAGResponseHandler</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="AugmentedResponseHandler (aiweb_common.generate.AugmentedResponse.AugmentedResponseHandler)" href="#aiweb_common.generate.AugmentedResponse.AugmentedResponseHandler">AugmentedResponseHandler</a></code></p>
+
+
+
+        <p>The <code>RAGResponseHandler</code> class extends <code>AugmentedResponseHandler</code> and
+initializes <code>RAGServicer</code> object with specified interfaces and a vector store.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>llm_utils/aiweb_common/generate/AugmentedResponse.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RAGResponseHandler</span><span class="p">(</span><span class="n">AugmentedResponseHandler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The `RAGResponseHandler` class extends `AugmentedResponseHandler` and</span>
+<span class="sd">    initializes `RAGServicer` object with specified interfaces and a vector store.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">llm_interface</span><span class="p">,</span> <span class="n">embedding_interface</span><span class="p">,</span> <span class="n">vectorstore</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aug_service</span> <span class="o">=</span> <span class="n">RAGServicer</span><span class="p">(</span><span class="n">llm_interface</span><span class="p">,</span> <span class="n">embedding_interface</span><span class="p">,</span> <span class="n">vectorstore</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">llm_interface</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="aiweb_common.generate.AugmentedResponse.SearchResponseHandler" class="doc doc-heading">
+            <code>SearchResponseHandler</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="AugmentedResponseHandler (aiweb_common.generate.AugmentedResponse.AugmentedResponseHandler)" href="#aiweb_common.generate.AugmentedResponse.AugmentedResponseHandler">AugmentedResponseHandler</a></code></p>
+
+
+
+        <p>The <code>SearchResponseHandler</code> class extends <code>AugmentedResponseHandler</code> and initializes a
+<code>SearchServicer</code> object for handling search responses.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>llm_utils/aiweb_common/generate/AugmentedResponse.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SearchResponseHandler</span><span class="p">(</span><span class="n">AugmentedResponseHandler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The `SearchResponseHandler` class extends `AugmentedResponseHandler` and initializes a</span>
+<span class="sd">    `SearchServicer` object for handling search responses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">llm_interface</span><span class="p">,</span> <span class="n">searchable</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aug_service</span> <span class="o">=</span> <span class="n">SearchServicer</span><span class="p">(</span><span class="n">llm_interface</span><span class="p">,</span> <span class="n">searchable</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">llm_interface</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../WorkflowHandler.html" class="btn btn-neutral float-left" title="Workflow Handler"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="AugmentedServicer.html" class="btn btn-neutral float-right" title="AugmentedServicer">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/uabperiopai" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../WorkflowHandler.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="AugmentedServicer.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

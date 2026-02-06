@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://sites.uab.edu/periop-datascience/UMLBot_streamlit_app.html" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>User Interface - UMLBot</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "User Interface";
+        var mkdocs_page_input_path = "UMLBot_streamlit_app.md";
+        var mkdocs_page_url = "/periop-datascience/UMLBot_streamlit_app.html";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="index.html" class="icon icon-home"> UMLBot
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="index.html">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="tests/index.html">Tests</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">UMLBot</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="UMLBot/__init__.html">Package Init</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="UMLBot/api_server.html">API Server</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="UMLBot/exceptions.html">Exceptions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="UMLBot/llm_interface.html">LLM Interface</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="UMLBot/uml_draft_handler.html">UML Draft Handler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Services</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="UMLBot/services/__init__.html">Init</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="UMLBot/services/diagram_service.html">Diagram Service</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Utils</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="UMLBot/utils/plantuml_extractor.html">PlantUML Extractor</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Config</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="UMLBot/config/__init__.html">Init</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="UMLBot/config/config.html">Config</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">User Interface</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#chat-based-uml-revision-error-correction-workflow">Chat-Based UML Revision &amp; Error Correction Workflow</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#1-plantuml-code-generation">1. PlantUML Code Generation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2-plantuml-code-encoding-and-server-request">2. PlantUML Code Encoding and Server Request</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-ui-rendering-and-error-handling">3. UI Rendering and Error Handling</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#summary-diagram">Summary Diagram</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#references">References</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">llm_utils</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="llm_utils/index.html">Home</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Fast API</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/fastapi/helper_apis.html">Helper APIS</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/fastapi/schemas.html">Schemas</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/fastapi/validators.html">Validators</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >File Operations</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/file_operations/docx_creator.html">Docx Creator</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/file_operations/file_config.html">File Config</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/file_operations/file_handling.html">File Handling</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/file_operations/text_format.html">Text Format</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/file_operations/upload_manager.html">Upload Manager</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Resource</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/resource/default_resource_config.html">Default Resource Config</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/resource/NIHRePORTERInterface.html">NIH RePORTER Interface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/resource/PubMedInterface.html">PubMed Interface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/resource/PubMedQuery.html">PubMed Query</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Streamlit</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/streamlit/BYOKLogin.html">Bring Your Own Key (BYOK)</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/streamlit/streamlit_common.html">Streamlit Common</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="llm_utils/aiweb_common/ObjectFactory.html">Object Factory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="llm_utils/aiweb_common/WorkflowHandler.html">Workflow Handler</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Generate</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/AugmentedResponse.html">AugmentedResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/AugmentedServicer.html">AugmentedServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/ChatResponse.html">ChatResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/ChatSchemas.html">ChatSchemas</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/ChatServicer.html">ChatServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/PromptAssembler.html">PromptAssembler</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/PromptyResponseHandler.html">PromptyResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/PromptyServicer.html">PromptyServicer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/QueryInterface.html">QueryInterface</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/Response.html">Response</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/SingleResponse.html">SingleResponse</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="llm_utils/aiweb_common/generate/SingleResponseServicer.html">SingleResponseServicer</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">UMLBot</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html" class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">UMLBot</li>
+      <li class="breadcrumb-item active">User Interface</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/uabperiopai/edit/master/docs/UMLBot_streamlit_app.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="uml-diagram-rendering-chat-based-revision-workflow">UML Diagram Rendering &amp; Chat-Based Revision Workflow</h1>
+<p>This section describes the end-to-end workflow for rendering and revising UML diagrams in the Gradio-based UMLBot UI, including chat-based iterative refinement, PlantUML code generation, encoding, server communication, image rendering, and error handling.</p>
+<hr />
+<h2 id="chat-based-uml-revision-error-correction-workflow">Chat-Based UML Revision &amp; Error Correction Workflow</h2>
+<ul>
+<li><strong>Conversational Revision:</strong>
+  Users interact with the system via a chat interface, describing the desired system, requesting changes, or asking for corrections in natural language.</li>
+<li><strong>Iterative Updates:</strong>
+  Each chat message triggers prompt construction, LLM invocation, and diagram/code update. Users can request additions, removals, or clarifications at any step.</li>
+<li><strong>Error Handling &amp; Auto-Correction:</strong>
+  If an error occurs (e.g., invalid UML, rendering failure), the system:</li>
+<li>Surfaces a clear, actionable error message in the chat/status area.</li>
+<li>Attempts to auto-correct the issue using LLM-based repair strategies.</li>
+<li>Provides fallback PlantUML code or diagrams if correction fails.</li>
+<li><strong>Transparency:</strong>
+  All status updates, errors, and corrections are visible in the chat, ensuring users understand what went wrong and how it was addressed.</li>
+</ul>
+<hr />
+<h2 id="1-plantuml-code-generation">1. PlantUML Code Generation</h2>
+<ul>
+<li>
+<p><strong>User Input:</strong><br />
+  The user provides a free-text description and selects a UML diagram type (and optionally a theme) in the Gradio UI.</p>
+</li>
+<li>
+<p><strong>Prompt Construction:</strong><br />
+  The <a href="UMLBot/uml_draft_handler.html"><code>UMLDraftHandler</code></a> loads a prompty template and fills in variables (<code>diagram_type</code>, <code>description</code>, <code>theme</code>).  </p>
+</li>
+<li>The template is validated for required placeholders.</li>
+<li>
+<p>If the template or variables are invalid, a <code>ValueError</code> is raised.</p>
+</li>
+<li>
+<p><strong>LLM Invocation:</strong><br />
+  The handler invokes the configured LLM (e.g., OpenAI via LangChain) with the constructed prompt.</p>
+</li>
+<li>On LLM errors (e.g., API failure, invalid response), a fallback PlantUML stub is generated and an error message is set for the UI.</li>
+</ul>
+<h2 id="2-plantuml-code-encoding-and-server-request">2. PlantUML Code Encoding and Server Request</h2>
+<ul>
+<li>
+<p><strong>Encoding:</strong><br />
+  The generated PlantUML code is URL-encoded using <code>urllib.parse.quote</code>.</p>
+</li>
+<li>
+<p><strong>Image URL Construction:</strong><br />
+  The encoded string is inserted into a PlantUML server URL template (e.g., <code>http://localhost:8080/svg/{encoded}</code>).</p>
+</li>
+<li>
+<p><strong>Image Fetch:</strong><br />
+  The app sends an HTTP GET request to the PlantUML server to retrieve the rendered diagram image.</p>
+</li>
+<li>If the request fails (network error, timeout, non-200 response), the error is appended to the UI status message.</li>
+</ul>
+<h2 id="3-ui-rendering-and-error-handling">3. UI Rendering and Error Handling</h2>
+<ul>
+<li>
+<p><strong>Image Rendering:</strong>
+  If the image is successfully fetched, it is loaded as a PIL Image and displayed in the Gradio UI alongside the generated PlantUML code.</p>
+</li>
+<li>
+<p><strong>Error Handling in Chat Workflow:</strong></p>
+</li>
+<li><strong>LLM/Prompt Errors:</strong><ul>
+<li>The UI displays a fallback PlantUML stub and a status message indicating the LLM error in the chat/status area.</li>
+</ul>
+</li>
+<li><strong>PlantUML Server/Image Fetch Errors:</strong><ul>
+<li>The UI displays the PlantUML code, but the image preview is blank or missing.</li>
+<li>The status message includes details of the fetch failure in the chat/status area.</li>
+</ul>
+</li>
+<li><strong>Image Conversion Errors:</strong><ul>
+<li>If the image cannot be converted to a valid format, the UI shows a status message with the conversion error in the chat/status area.</li>
+</ul>
+</li>
+<li>
+<p><strong>Auto-Correction:</strong></p>
+<ul>
+<li>When possible, the system attempts to auto-correct errors and informs the user of the correction attempt and result.</li>
+</ul>
+</li>
+<li>
+<p><strong>Status Messaging:</strong>
+  All errors, corrections, and status updates are surfaced to the user via the chat and Markdown status area in the UI, ensuring transparency for debugging and user feedback.</p>
+</li>
+</ul>
+<hr />
+<h2 id="summary-diagram">Summary Diagram</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant User
+    participant GradioUI
+    participant UMLDraftHandler
+    participant LLM
+    participant PlantUMLServer
+
+    User-&gt;&gt;GradioUI: Enter description, select type
+    GradioUI-&gt;&gt;UMLDraftHandler: Build prompt, validate
+    UMLDraftHandler-&gt;&gt;LLM: Invoke with prompt
+    LLM--&gt;&gt;UMLDraftHandler: PlantUML code (or error)
+    UMLDraftHandler--&gt;&gt;GradioUI: Return code (or fallback)
+    GradioUI-&gt;&gt;PlantUMLServer: GET /plantuml/png/{encoded}
+    PlantUMLServer--&gt;&gt;GradioUI: Image bytes (or error)
+    GradioUI--&gt;&gt;User: Show code, image, status
+</code></pre>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>app/gradio_app.py</li>
+<li>UMLBot/uml_draft_handler.py</li>
+<li>assets/uml_diagram.prompty</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="UMLBot/config/config.html" class="btn btn-neutral float-left" title="Config"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="llm_utils/index.html" class="btn btn-neutral float-right" title="Home">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/uabperiopai" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="UMLBot/config/config.html" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="llm_utils/index.html" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+Introduction
+The UML Diagram Generator is a web-based application that lets users describe desired UML or related diagrams in free text, selects diagram types, and instantly produces, previews, and downloads PlantUML‐rendered images. It leverages a conversational AI (LLM) for natural-language parsing, an auto-repair engine for syntax fixes, and a scalable PlantUML rendering service.
+ Objectives
+• Enable non-expert users to create class, use-case, activity, component, deployment, state-machine, timing, and other UML diagrams from plain English descriptions.
+• Provide real-time preview (PNG/SVG).
+• Auto-detect and repair PlantUML syntax errors.
+• Fail over from a managed PlantUML server to a local JAR renderer if the server is unavailable.
+• Support user authentication, diagram history, and download.
+• Scale horizontally to meet demand and integrate robust logging/monitoring.
+ Stakeholders
+• End user (software architects, analysts, educators)
+• Product owner / project manager
+• DevOps and Infrastructure teams
+• QA/test engineers
+• Security/compliance officers
+ User Personas
+– “Alice, the Business Analyst”: wants quick use-case and activity diagrams without writing UML code.
+– “Bob, the Senior Architect”: iterates on class and component designs, needs reliable rendering and syntax validation.
+– “Carol, the Student”: explores state-machines and sequence diagrams for learning, values instant feedback.
+ Use Cases
+ Enter description text
+ Select diagram type (use-case, class, activity, component, deployment, state-machine, etc.)
+ Send request to ChatBot Service
+ Validate/auto-repair PlantUML syntax
+ Preview generated diagram
+ Download diagram image
+ Functional Requirements
+6.1. User Interface (Gradio UI)
+ – Free-text input field
+ – Dropdown for diagram type
+ – “Generate” button triggers rendering flow
+ – Preview panel (renders PNG/SVG inline)
+ – “Download” button to save image
+6.2. ChatBot Service
+ – Accepts DiagramRequest (description, type, options, theme)
+ – Calls NLPParser to translate free text into an intermediate model
+ – Invokes DiagramBuilder.generate()
+6.3. DiagramBuilder
+ – buildPlantUmlCode(parsedModel, type): produces PlantUML source
+ – Invoke PlantUMLValidator.isValid(); if invalid, call AutoRepairStrategy.repair() and revalidate
+ – Call PlantUmlClient.render() to get image bytes and messages
+ – Return DiagramResponse (plantUmlCode, imageBytes, repaired flag, messages)
+6.4. NLPParser
+ – Use LLM API to parse natural language into UML constructs and map to PlantUML syntax
+6.5. ThemeManager
+ – Provide PlantUML skin/theme code (default “bluegray” or user-selected)
+6.6. PlantUMLValidator & AutoRepairStrategy
+ – Validate source via remote service or regex/OCL checks
+ – Attempt well-formedness repair (e.g., missing arrows, unmatched braces)
+6.7. PlantUmlClient
+ – HTTPPlantUmlClient: POST PlantUML code to remote server, handle timeouts/errors
+ – LocalPlantUmlClient: invoke local PlantUML JAR as fallback
+6.8. DownloadController
+ – Serve image bytes to browser with appropriate HTTP headers
+6.9. Authentication & Session Management (optional)
+ – Integrate with Auth Service via OAuth or API key
+ – Maintain Session records, enforce per-user quota
+6.10. History & Auditing
+ – Persist DiagramHistory and RenderJob records in database
+ – Allow users to browse past diagrams and statuses
+ Non-Functional Requirements
+– Performance: end-to-end rendering < 3s under normal load
+– Scalability: app servers autoscale (2–10 pods) behind a load balancer; PlantUML server clusters with failover
+– Reliability: ≥ 99.9% uptime; automatic fallback to local rendering
+– Security: TLS for all front-end/back-end calls; authenticated access if enabled; sanitize inputs
+– Monitoring/Logging: push metrics and logs to central stack; alert on high error rates
+– Extensibility: plugin system for new diagram types; configurable repair strategies
+– Maintainability: clean package/module structure (UI, service, infrastructure, domain) and comprehensive tests
+ System Architecture Overview
+– Browser ←→ Gradio Interface (UI)
+– Gradio UI → ChatBotService → NLPParser + DiagramBuilder → PlantUMLValidator → PlantUmlClient (HTTP or Local)
+– ChatBotService → DiagramResponse → UI preview/download
+– Backing services: Auth Service, Monitoring/Logging, Database Cluster
+ Data Model
+– UserAccount(userId PK, username, email, passwordHash)
+– Session(sessionId PK, userId FK, createdAt, expiresAt)
+– DiagramHistory(diagramId PK, userId FK, type, description, timeCreated, lastStatus)
+– RenderJob(jobId PK, diagramId FK, plantumlCode, status, resultUri, createdAt)
+ Deployment & Scalability
+ – Load Balancer routes HTTPS to Gradio App Server pods
+ – App Server pods autoscale based on CPU/RAM
+ – Dedicated PlantUML Server cluster (horizontal scale, shared storage, auto-failover)
+ – DB Cluster replicated for high availability
+ – External Auth Service and Monitoring stack integrated
+ State & Sequence Flows
+ 11.1. Auth Lifecycle
+ – LoggedOut → Authenticated → ElevatedPrivileges → back to Authenticated or LoggedOut
+ 11.2. Diagram Generation
+ – UI → ChatBotService → DiagramBuilder → Validator → Client → Server → image → UI
+ – On server failure: Builder → LocalPlantUmlClient fallback
+ 11.3. Error Handling
+ – Validate → invalid → repair → revalidate → if still invalid show error
+ – Render errors propagated to UI
+ Glossary
+ – DiagramRequest: user’s free-text, type, options package
+ – DiagramResponse: PlantUML code, image, repair status, messages
+ – PlantUMLClient: abstraction over remote/local renderer
+ – AutoRepairStrategy: syntax auto-fixer
+ – ChatBotService: orchestrates parsing and rendering
