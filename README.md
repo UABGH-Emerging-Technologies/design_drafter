@@ -24,8 +24,8 @@ UMLBot is an interactive tool for generating, revising, and validating UML diagr
 From the project root:
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 python3 -m pip install pip setuptools wheel
 python3 -m pip install -e .
 ```
@@ -72,7 +72,32 @@ Defaults point at the local server:
 
 If you prefer a hosted PlantUML server, update those values.
 
-### 3. Running the Apps
+### 3. Docker Devcontainer Setup (Recommended)
+
+The devcontainer uses `.venv` and runs the startup script in `Docker/startup.sh` to
+install dependencies, build the frontend, and launch the backend/frontend.
+
+1. Ensure Docker Desktop is running (WSL users should have Docker Desktop with WSL integration enabled).
+2. Open the repo in VS Code and run **Dev Containers: Reopen in Container**.
+3. Set your LLM endpoint and key by copying the example file inside the container:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` with your values:
+
+- `UMLBOT_LLM_API_BASE`
+- `UMLBOT_LLM_API_KEY`
+- `UMLBOT_LLM_MODEL` (optional)
+
+4. (Optional) Start a local PlantUML server:
+
+```bash
+make plantuml-up
+```
+
+### 4. Running the Apps (Local)
 
 Start the Gradio/LLM backend:
 

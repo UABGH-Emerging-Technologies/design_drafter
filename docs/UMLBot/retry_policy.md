@@ -1,1 +1,0 @@
-::: UMLBot.retry_policy

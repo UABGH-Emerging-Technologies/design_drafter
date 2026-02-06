@@ -21,8 +21,8 @@
 		"source=./data,target=/data,type=bind,consistency=cached"
 	  ],
 
-	//mlflow port
-	"forwardPorts":[5000, 8000],
+	//mlflow port 5000
+	"forwardPorts":[8000],
 	
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
