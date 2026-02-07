@@ -2,37 +2,16 @@
 
 import Image from 'next/image'
 import { RefreshCw, RotateCw, ZoomIn, ZoomOut } from 'lucide-react'
-import plantumlEncoder from 'plantuml-encoder'
-import { useEffect, useState } from 'react'
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 
 type UMLViewerProps = {
 	umlCode: string
 	isGenerating: boolean
 	imageUrl?: string
-	onImageGenerate?: (url: string) => void
 }
 
-const UMLViewer = ({ umlCode, isGenerating, imageUrl, onImageGenerate }: UMLViewerProps) => {
-	const [generatedImage, setGeneratedImage] = useState('')
-
-	useEffect(() => {
-		async function generateUML() {
-			if (!umlCode || imageUrl) {
-				return
-			}
-
-			const encodedUML = plantumlEncoder.encode(umlCode)
-			const plantUMLServer = 'http://138.26.48.104:8080/svg/'
-			const url = plantUMLServer + encodedUML
-			setGeneratedImage(url)
-			onImageGenerate?.(url)
-		}
-
-		generateUML()
-	}, [imageUrl, onImageGenerate, umlCode])
-
-	const previewSrc = imageUrl || generatedImage
+const UMLViewer = ({ umlCode, isGenerating, imageUrl }: UMLViewerProps) => {
+	const previewSrc = imageUrl
 
 	try {
 		return (
@@ -92,7 +71,7 @@ const UMLViewer = ({ umlCode, isGenerating, imageUrl, onImageGenerate }: UMLView
 												unoptimized
 											/>
 										) : (
-											<p>No diagram available</p>
+											<p>{umlCode ? 'No preview yet' : 'No diagram available'}</p>
 										)}
 									</div>
 								</TransformComponent>
