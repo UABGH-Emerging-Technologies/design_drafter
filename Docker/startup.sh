@@ -3,9 +3,24 @@
 curl -LsSf https://astral.sh/uv/install.sh | sh
 export PATH="$HOME/.local/bin:$PATH"
 
-# Ensure Python venv is created (idempotent)
-if [ ! -d "/workspaces/UMLBot/.venv" ]; then
-    make venv
+# Ensure .venv is writable and created (idempotent)
+if [ -d "/workspaces/UMLBot/.venv" ] && [ ! -w "/workspaces/UMLBot/.venv" ]; then
+    if command -v sudo >/dev/null 2>&1; then
+        sudo chown -R vscode:vscode /workspaces/UMLBot/.venv
+    else
+        echo ".venv exists but is not writable and sudo is unavailable."
+        exit 1
+    fi
+fi
+if [ ! -d "/workspaces/UMLBot/.venv" ] || [ ! -f "/workspaces/UMLBot/.venv/bin/activate" ]; then
+    rm -rf /workspaces/UMLBot/.venv
+    if command -v make >/dev/null 2>&1; then
+        make -B venv
+    elif command -v uv >/dev/null 2>&1; then
+        uv venv /workspaces/UMLBot/.venv
+    else
+        python3 -m venv /workspaces/UMLBot/.venv
+    fi
 fi
 
 # Check for npm and install Node dependencies (fail fast if missing)
@@ -14,10 +29,33 @@ if ! command -v npm &> /dev/null; then
     exit 1
 fi
 
-# Install/update Node/TypeScript dependencies for frontend
+# Ensure node_modules is writable (named volume may be root-owned)
 REPO_DIR="/workspaces/UMLBot"
 FRONTEND_DIR="${REPO_DIR}/app/frontend"
-cd "$FRONTEND_DIR" && npm install
+cd "$FRONTEND_DIR"
+if [ -d "node_modules" ] && [ ! -w "node_modules" ]; then
+    if command -v sudo >/dev/null 2>&1; then
+        sudo chown -R vscode:vscode "$FRONTEND_DIR/node_modules"
+    else
+        echo "node_modules is not writable and sudo is unavailable."
+        exit 1
+    fi
+fi
+if [ -d "/home/vscode/.npm" ] && [ ! -w "/home/vscode/.npm" ]; then
+    if command -v sudo >/dev/null 2>&1; then
+        sudo chown -R vscode:vscode /home/vscode/.npm
+    else
+        echo "/home/vscode/.npm is not writable and sudo is unavailable."
+        exit 1
+    fi
+fi
+
+# Install/update Node/TypeScript dependencies for frontend
+if [ -f "package-lock.json" ]; then
+    npm ci
+else
+    npm install
+fi
 
 # Build the production Next.js bundle required by `npm start`
 if ! npm run build; then
